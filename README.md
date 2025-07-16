@@ -18,7 +18,7 @@
 - LinkedIn : [Mon profil LinkedIn](https://www.linkedin.com/in/thibaut-modrin/)
 
 🌍 **À part ça ?**  
-Sans le savoir, la data a toujours éveillé ma curiosité.
-Entre voyages, Costa Rica 🇨🇷, moments épicuriens et rythmes de salsa 🎹, je cultive ma curiosité comme moteur principal pour apprendre et avancer.
+Sans le savoir, la data a toujours éveillé mon intérêt.
+Entre voyages, Costa Rica 🇨🇷, moments épicuriens et rythmes de salsa 🎹, je vois l’apprentissage comme un plaisir et une occasion constante de progresser.
 
 ![Profile views](https://komarev.com/ghpvc/?username=thibautmodrin&color=blue)
