@@ -9,7 +9,7 @@
 
 🔨 **Projets finaux :**
 - Création d’un modèle de Machine Learning avec déploiement d’une application Streamlit pour exposer les résultats.
-- Construction d’un pipeline complet, de la source aux prédictions, incluant : ingestion (Airbyte), transformation (dbt), entrepôt (Snowflake), modélisation (ML), API de prédiction (FastAPI), orchestration (Airflow) et monitoring MLOps (MLflow).
+- Construction d’un pipeline complet, de la source aux prédictions, incluant : ingestion (Airbyte), transformation (dbt), entrepôt (Snowflake), modélisation (ML), API de prédiction (FastAPI), orchestration (Airflow) et monitoring MLOps (MLflow, Evidently).
 
 
 📫 **Pour échanger ou collaborer :**
