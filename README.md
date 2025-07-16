@@ -7,7 +7,7 @@ I am a Data Engineer in professional transition, specialized in building modern 
 💻 **Currently completing the Fullstack & Lead Data Science bootcamp at Jedha**, I focus on:
 
 - Designing and automating ELT data pipelines (Airbyte, dbt, Snowflake, Airflow)
-- Data analysis and modeling (Machine Learning, Deep Learning, Scikit-learn, TensorFlow)
+- Data analysis and modeling (Machine Learning, Scikit-learn)
 - Deploying robust ML APIs (FastAPI) and implementing production monitoring (MLflow, Evidently)
 - Automating workflows and deployments with CI/CD best practices for scalability, quality, and maintainability
 
