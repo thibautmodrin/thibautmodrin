@@ -1,27 +1,26 @@
 # 👋 Welcome to my GitHub!
 
-🎯 Data Engineer en reconversion, spécialisé dans les pipelines ELT modernes (Airbyte, dbt, Snowflake, Airflow) pour transformer les données brutes en insights marketing exploitables et en modèles ML fiables.
+🎯 **Data Engineer | Machine Learning Engineer | ELT Pipelines | MLOps | CI/CD Automation**
 
-💻 Actuellement en fin de formation chez Jedha Bootcamp (Fullstack & Lead), je me concentre sur :
+I am a Data Engineer in professional transition, specialized in building modern ELT data pipelines using **Airbyte**, **dbt**, **Snowflake**, and **Airflow** to transform raw data into actionable marketing insights and robust, production-ready machine learning models.
 
-- La construction de pipelines automatisés (Airbyte, dbt, Snowflake, Airflow)
-- L'analyse et la modélisation des données (Machine Learning, Deep Learning)
-- Le déploiement d’API ML robustes (FastAPI) et le monitoring en production (MLflow, Evidently)
-- L’automatisation des workflows et des déploiements avec des pratiques CI/CD pour assurer robustesse, qualité et scalabilité
+💻 **Currently completing the Fullstack & Lead Data Science bootcamp at Jedha**, I focus on:
 
-🔨 **Projets finaux :**
+- Designing and automating ELT data pipelines (Airbyte, dbt, Snowflake, Airflow)
+- Data analysis and modeling (Machine Learning, Deep Learning, Scikit-learn, TensorFlow)
+- Deploying robust ML APIs (FastAPI) and implementing production monitoring (MLflow, Evidently)
+- Automating workflows and deployments with CI/CD best practices for scalability, quality, and maintainability
 
-- Développement d’un modèle de Machine Learning de prédiction avec déploiement d’une application Streamlit pour exposer les résultats d'inférences.
-- Construction d’un pipeline complet, de la collecte de données à la prédiction, incluant : ingestion (Airbyte), transformation (dbt), entrepôt (Snowflake), modélisation (ML), déploiement d’API (FastAPI), orchestration (Airflow), monitoring MLOps (MLflow, Evidently) et automatisation CI/CD pour industrialiser les mises à jour et les releases.
+🔨 **Key Projects:**
 
-📫 **Pour échanger ou collaborer :**
+- Development and deployment of a Machine Learning prediction model with a Streamlit application to showcase inference results.
+- End-to-end data pipeline project: from data ingestion (Airbyte) and transformation (dbt), to cloud data warehousing (Snowflake), ML modeling, API deployment (FastAPI), orchestration (Airflow), MLOps monitoring (MLflow, Evidently), and CI/CD automation for continuous delivery.
 
-- Email : thibaut.modrin@gmail.com  
-- Contact : 06.28.43.22.10  
-- LinkedIn : [Mon profil LinkedIn](https://linkedin.com/in/tonprofil)
+📫 **Get in touch or collaborate:**
 
-🌍 **À part ça ?**  
-Sans le savoir, la data a toujours éveillé mon intérêt. Entre voyages, Costa Rica 🇨🇷, moments épicuriens et rythmes de salsa 🎹, je vois l’apprentissage comme un plaisir et une occasion constante de progresser.
+- 📧 Email: thibaut.modrin@gmail.com  
+- 📱 Contact: 06.28.43.22.10  
+- 💼 LinkedIn: [My LinkedIn profile](https://linkedin.com/in/tonprofil)
 
-
-![Profile views](https://komarev.com/ghpvc/?username=thibautmodrin&color=blue)
+🌍 **A bit about me:**  
+I've always been drawn to data without realizing it. Passionate about travel, a true connoisseur of Costa Rica 🇨🇷, an epicurean at heart, and a salsa 🎹 enthusiast, I believe curiosity and enjoyment are the best drivers for learning and growth.
