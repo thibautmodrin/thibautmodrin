@@ -8,7 +8,7 @@
 - Déploiement d’API ML robustes (FastAPI) et monitoring en production (MLflow, Evidently)
 
 🔨 **Projets finaux :**
-- Développement d’un modèle de Machine Learning pour exposer des insights via une application Streamlit.
+- Développemùent d’un modèle de Machine Learning de prédiction avec déploiement d’une application Streamlit pour exposer les résultats d'inférences.
 - Construction d’un pipeline complet, de la collecte de données à la prédiction, incluant : ingestion (Airbyte), transformation (dbt), entrepôt (Snowflake), modélisation (ML), déploiement d’API (FastAPI), orchestration (Airflow), et monitoring MLOps (MLflow, Evidently).
 
 📫 **Pour échanger ou collaborer :**
