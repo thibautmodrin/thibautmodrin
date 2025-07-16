@@ -3,9 +3,9 @@
 🎯 Data Engineer en reconversion, spécialisé dans les pipelines ELT modernes (Airbyte, dbt, Snowflake, Airflow) pour transformer les données brutes en insights marketing exploitables et en modèles ML fiables.
 
 💻 Actuellement en fin de formation chez Jedha Bootcamp (Fullstack & Lead), je me concentre sur :
-- Construction de pipelines automatisés (Airbyte, dbt, Snowflake, Airflow)
-- Analyse et modélisation des données (Machine Learning, Deep Learning)
-- Déploiement d’API ML robustes (FastAPI) et monitoring en production (MLflow, Evidently)
+- la Construction de pipelines automatisés (Airbyte, dbt, Snowflake, Airflow)
+- l'Analyse et modélisation des données (Machine Learning, Deep Learning)
+- le Déploiement d’API ML robustes (FastAPI) et monitoring en production (MLflow, Evidently)
 
 🔨 **Projets finaux :**
 - Développemùent d’un modèle de Machine Learning de prédiction avec déploiement d’une application Streamlit pour exposer les résultats d'inférences.
