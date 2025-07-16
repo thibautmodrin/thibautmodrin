@@ -15,7 +15,7 @@
 📫 **Pour échanger ou collaborer :**
 - Email : thibaut.modrin@gmail.com
 - Contact : 06.28.43.22.10  
-- LinkedIn : [Ton profil LinkedIn](https://www.linkedin.com/in/thibaut-modrin/)
+- LinkedIn : [Mon profil LinkedIn](https://www.linkedin.com/in/thibaut-modrin/)
 
 🌍 **À part ça ?**  
 Sans le savoir, la data a toujours éveillé ma curiosité.
