@@ -1,4 +1,4 @@
-# 👋 Salut et bienvenue !
+# 👋  Welcome to my GitHub!
 
 🎯 Data Engineer en reconversion, spécialisé dans les pipelines ELT modernes (Airbyte, dbt, Snowflake, Airflow) pour transformer les données brutes en insights marketing exploitables et en modèles ML fiables.
 
