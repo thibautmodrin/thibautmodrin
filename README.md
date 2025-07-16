@@ -19,4 +19,5 @@
 
 🌍 **À part ça ?**  
 Sans le savoir, la data a toujours éveillé ma curiosité.
+
 Entre voyages, Costa Rica 🇨🇷, moments épicuriens et rythmes de salsa 🎹, je cultive ma curiosité comme moteur principal pour apprendre et avancer.
