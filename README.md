@@ -21,6 +21,7 @@ I am a Data Engineer in professional transition, specialized in building modern 
 - 📧 Email: thibaut.modrin@gmail.com  
 - 📱 Contact: 06.28.43.22.10  
 - 💼 LinkedIn: [My LinkedIn profile](https://www.linkedin.com/in/thibaut-modrin/)
+- 📅 Book a meeting: [Calendly 30 min](https://calendly.com/thibaut-modrin/30min)
 
 🌍 **A bit about me:**  
 
