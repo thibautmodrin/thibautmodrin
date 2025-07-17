@@ -25,3 +25,6 @@ I am a Data Engineer in professional transition, specialized in building modern 
 🌍 **A bit about me:**  
 
 I've always been drawn to data without realizing it. Passionate about travel, a true connoisseur of Costa Rica 🇨🇷, an epicurean at heart, and a salsa 🎹 enthusiast, I believe curiosity and enjoyment are the best drivers for learning and growth.
+
+![Profile views](https://komarev.com/ghpvc/?username=thibautmodrin&color=blue)
+
