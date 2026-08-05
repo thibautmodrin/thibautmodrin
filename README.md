@@ -1,18 +1,18 @@
 # 👋 Welcome to my GitHub!
 
-🎯 **Data Engineer | Machine Learning Engineer | ELT Pipelines | MLOps | CI/CD Automation**
+🎯 **Data Scientist | Machine Learning Engineer | Predictive Modeling & Production Deployment**
 
-I am a Data Engineer in professional transition, specialized in building modern ELT data pipelines using **Airbyte**, **dbt**, **Snowflake**, and **Airflow** to transform raw data into actionable marketing insights and robust, production-ready machine learning models.
+Data Scientist in professional transition (Jedha Fullstack Data Science bootcamp, RNCP35288 certification), I build predictive models end-to-end: from data exploration and feature engineering to production-ready APIs and monitoring.
 
-💻 **Currently completing the Fullstack & Lead Data Science bootcamp at Jedha**, I focus on:
-
-- Designing and automating ELT data pipelines (Airbyte, dbt, Snowflake, Airflow)
-- Data analysis and modeling (Machine Learning, Scikit-learn)
-- Deploying robust ML APIs (FastAPI) and implementing production monitoring (MLflow, Evidently)
-- Automating workflows and deployments with CI/CD best practices for scalability, quality, and maintainability
+🛠️ **Stack:** Python, Scikit-learn, XGBoost, MLflow, FastAPI, Docker, Streamlit, SQL
 
 🔨 **Key Projects:**
 
+- **HPP Prediction** — Predictive model for postpartum hemorrhage risk from clinical variables. Model comparison (Logistic Regression, Random Forest, XGBoost), interpretability with SHAP, experiment tracking with MLflow, and a Streamlit demo for non-technical clinical staff (midwives, doctors).
+- **ERP Stock Prediction** — Predictive pipeline for stock-outs and inventory optimization, built on top of an ERP data source and served via a FastAPI API for integration into business dashboards.
+- **Vitizen** — Mobile app for winegrowers (Android Kotlin + Python backend, Firebase) with a RAG-based AI assistant for agricultural technical documentation.
+
+📅 Next step: **Lead Data Engineering** certification, to round out an end-to-end profile — from data engineering to ML in production.
 - Development and deployment of a Machine Learning prediction model with a Streamlit application to showcase inference results.
 - End-to-end data pipeline project: from data ingestion (Airbyte) and transformation (dbt), to cloud data warehousing (Snowflake), ML modeling, API deployment (FastAPI), orchestration (Airflow), MLOps monitoring (MLflow, Evidently), and CI/CD automation for continuous delivery.
 
