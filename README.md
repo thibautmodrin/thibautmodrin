@@ -8,13 +8,13 @@ Data Scientist in professional transition (Jedha Fullstack Data Science bootcamp
 
 🔨 **Key Projects:**
 
-- **HPP Prediction** — Predictive model for postpartum hemorrhage risk from clinical variables. Model comparison (Logistic Regression, Random Forest, XGBoost), interpretability with SHAP, experiment tracking with MLflow, and a Streamlit demo for non-technical clinical staff (midwives, doctors).
-- **ERP Stock Prediction** — Predictive pipeline for stock-outs and inventory optimization, built on top of an ERP data source and served via a FastAPI API for integration into business dashboards.
-- **Vitizen** — Mobile app for winegrowers (Android Kotlin + Python backend, Firebase) with a RAG-based AI assistant for agricultural technical documentation.
+- **[HPP Prediction](https://github.com/thibautmodrin/hpp-prediction)** — Predictive model for postpartum hemorrhage risk from clinical variables. Model comparison (Logistic Regression, Random Forest, XGBoost), interpretability with SHAP, experiment tracking with MLflow, and a Streamlit demo for non-technical clinical staff (midwives, doctors).
+- **[ERP Stock Prediction](https://github.com/thibautmodrin/erp-stock-prediction)** — Predictive pipeline for stock-outs and inventory optimization, built on top of an ERP data source and served via a FastAPI API for integration into business dashboards.
+- **[Vitizen](https://github.com/thibautmodrin/Vitizen)** — Mobile app for winegrowers (Android Kotlin + Python backend, Firebase) with a RAG-based AI assistant for agricultural technical documentation.
 
 📅 Next step: **Lead Data Engineering** certification, to round out an end-to-end profile — from data engineering to ML in production.
-- Development and deployment of a Machine Learning prediction model with a Streamlit application to showcase inference results.
-- End-to-end data pipeline project: from data ingestion (Airbyte) and transformation (dbt), to cloud data warehousing (Snowflake), ML modeling, API deployment (FastAPI), orchestration (Airflow), MLOps monitoring (MLflow, Evidently), and CI/CD automation for continuous delivery.
+- Development and deployment of a Machine Learning prediction model with a Streamlit application to showcase inference results, as illustrated in **[HPP Prediction](https://github.com/thibautmodrin/hpp-prediction)**.
+- End-to-end data pipeline project: from data ingestion (Airbyte) and transformation (dbt), to cloud data warehousing (Snowflake), ML modeling, API deployment (FastAPI), orchestration (Airflow), MLOps monitoring (MLflow, Evidently), and CI/CD automation for continuous delivery in **[Pipeline Supply Chain MS Fabric](https://github.com/thibautmodrin/Pipeline_Supply_Chain_MS_Fabric)**.
 
 📫 **Get in touch or collaborate:**
 
