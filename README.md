@@ -12,9 +12,7 @@ Data Scientist in professional transition (Jedha Fullstack Data Science bootcamp
 - **[ERP Stock Prediction](https://github.com/thibautmodrin/erp-stock-prediction)** — Predictive pipeline for stock-outs and inventory optimization, built on top of an ERP data source and served via a FastAPI API for integration into business dashboards.
 - **[Vitizen](https://github.com/thibautmodrin/Vitizen)** — Mobile app for winegrowers (Android Kotlin + Python backend, Firebase) with a RAG-based AI assistant for agricultural technical documentation.
 
-📅 Next step: **Lead Data Engineering** certification, to round out an end-to-end profile — from data engineering to ML in production.
-- Development and deployment of a Machine Learning prediction model with a Streamlit application to showcase inference results, as illustrated in **[HPP Prediction](https://github.com/thibautmodrin/hpp-prediction)**.
-- End-to-end data pipeline project: from data ingestion (Airbyte) and transformation (dbt), to cloud data warehousing (Snowflake), ML modeling, API deployment (FastAPI), orchestration (Airflow), MLOps monitoring (MLflow, Evidently), and CI/CD automation for continuous delivery in **[Pipeline Supply Chain MS Fabric](https://github.com/thibautmodrin/Pipeline_Supply_Chain_MS_Fabric)**.
+📅 Next step: **Lead Data Engineering** certification, to round out an end-to-end profile — from data engineering to ML in production. I'll focus on modern data stack skills: data ingestion and transformation (Airbyte, dbt), cloud data warehousing, pipeline orchestration (Airflow), API deployment (FastAPI), and MLOps monitoring (MLflow, Evidently).
 
 📫 **Get in touch or collaborate:**
 
