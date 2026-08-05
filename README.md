@@ -2,7 +2,7 @@
 
 🎯 **Data Scientist | Machine Learning Engineer | Predictive Modeling & Production Deployment**
 
-Data Scientist in professional transition (Jedha Fullstack Data Science bootcamp, RNCP35288 certification), I build predictive models end-to-end: from data exploration and feature engineering to production-ready APIs and monitoring.
+Data Scientist in professional transition, certified through Jedha's **Fullstack Data Science & Engineering** program (**Machine Learning Engineer Certificate**, RNCP35288 — *Concepteur Développeur en Science des Données*, level 6). I build predictive models end-to-end: from data exploration and feature engineering to production-ready APIs and monitoring.
 
 🛠️ **Stack:** Python, Scikit-learn, XGBoost, MLflow, FastAPI, Docker, Streamlit, SQL
 
@@ -12,7 +12,12 @@ Data Scientist in professional transition (Jedha Fullstack Data Science bootcamp
 - **[ERP Stock Prediction](https://github.com/thibautmodrin/erp-stock-prediction)** — Predictive pipeline for stock-outs and inventory optimization, built on top of an ERP data source and served via a FastAPI API for integration into business dashboards.
 - **[Vitizen](https://github.com/thibautmodrin/Vitizen)** — Mobile app for winegrowers (Android Kotlin + Python backend, Firebase) with a RAG-based AI assistant for agricultural technical documentation.
 
-📅 Next step: **Lead Data Engineering** certification, to round out an end-to-end profile — from data engineering to ML in production. I'll focus on modern data stack skills: data ingestion and transformation (Airbyte, dbt), cloud data warehousing, pipeline orchestration (Airflow), API deployment (FastAPI), and MLOps monitoring (MLflow, Evidently).
+📅 **Next step:** **Lead Data Science & Engineering** training, preparing for the **Architecte en Intelligence Artificielle** certification (RNCP level 7 — BAC+5). The program covers four competency areas:
+
+- **Data governance** — policies, compliance, data quality, security, and risk management
+- **Data architecture for AI** — logical and physical modeling, cloud or on-premise infrastructure, scalability, and performance monitoring
+- **Data pipelines for AI** — ETL/ELT design, flow automation, quality control, and pipeline monitoring
+- **AI solutions deployment** — algorithm development, API integration, CI/CD, automated model retraining, and production monitoring (MLflow, Evidently)
 
 📫 **Get in touch or collaborate:**
 
