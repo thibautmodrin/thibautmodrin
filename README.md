@@ -8,7 +8,7 @@ Data Scientist in professional transition, certified through Jedha's **Fullstack
 
 🔨 **Key Projects:**
 
-- **[HPP Prediction](https://github.com/thibautmodrin/hpp-prediction)** — Predictive model for postpartum hemorrhage risk from clinical variables. Model comparison (Logistic Regression, Random Forest, XGBoost), interpretability with SHAP, experiment tracking with MLflow, and a Streamlit demo for non-technical clinical staff (midwives, doctors).
+- **[HPP Prediction](https://github.com/thibautmodrin/CDSD_Certification_Projets/tree/1420468dfa61c86207d2a691969eaa83efc4ddd2/Projet%209%20-%20Final%20Project%20-%20HPP%20Prediction)** — Predictive model for postpartum hemorrhage risk from clinical variables. Model comparison (Logistic Regression, Random Forest, XGBoost), interpretability with SHAP, experiment tracking with MLflow, and a Streamlit demo for non-technical clinical staff (midwives, doctors).
 - **[ERP Stock Prediction](https://github.com/thibautmodrin/erp-stock-prediction)** — Predictive pipeline for stock-outs and inventory optimization, built on top of an ERP data source and served via a FastAPI API for integration into business dashboards.
 - **[Vitizen](https://github.com/thibautmodrin/Vitizen)** — Mobile app for winegrowers (Android Kotlin + Python backend, Firebase) with a RAG-based AI assistant for agricultural technical documentation.
 
