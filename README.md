@@ -1,6 +1,6 @@
 # Thibaut Modrin
 
-**Junior ML / Data** — je conçois des projets data et machine learning end to end, de la donnée jusqu’à leur mise à disposition pour les métiers.
+**Junior ML / Data** — je conçois des projets data et machine learning end to end, de la donnée jusqu’à leur mise à disposition adaptés aux contraintes métiers.
 
 Formé chez Jedha : parcours Fullstack Data Science & Engineering (RNCP niveau 6), puis Lead Data Science & Engineering, avec un projet Overview MLOps dans le cadre de la certification Architecte en Intelligence Artificielle (RNCP).
 
