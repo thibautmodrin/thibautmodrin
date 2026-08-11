@@ -10,9 +10,10 @@ Python · Machine learning · Data engineering · APIs · Docker · SQL · GenAI
 
 ## Projets phares
 
-1. **[cathq-predictive-quality](https://github.com/thibautmodrin/cathq-predictive-quality)** — Projet MLOps junior : prédiction de la qualité en extrusion de cathéters, avec mise en service légère du modèle, monitoring, réentraînement conditionnel et intégration continue.
-2. **[HPP_Prediction_Lean](https://github.com/thibautmodrin/HPP_Prediction_Lean)** — Estimation du risque d’hémorragie du post-partum sévère dès l’admission : modèle simple, seuil métier et démonstration déployable, volontairement épurée.
-3. **[vitizen_rag](https://github.com/thibautmodrin/vitizen_rag)** — Assistant phytosanitaire appuyé sur une documentation technique viticole.
+1. **[HPP-Prediction-Lean](https://github.com/thibautmodrin/HPP-Prediction-Lean)** — Risque d’hémorragie du post-partum. Estimation dès l’admission : modèle lean, seuil métier et démo Streamlit/Docker.
+2. **[CathQ](https://github.com/thibautmodrin/CathQ)** — Qualité prédictive en extrusion. Prédiction du risque de rebut sur cathéters cardiovasculaires (MLOps : monitoring, réentraînement, CI).
+3. **[ERP-Stock-Prediction](https://github.com/thibautmodrin/ERP-Stock-Prediction)** — Anticipation des ruptures de stock. Module prédictif FastAPI branché sur un ERP pour inventaire et ventes.
+4. **[Vitizen-RAG](https://github.com/thibautmodrin/Vitizen-RAG)** — Assistant phytosanitaire viticole. Réponses sourcées (Chroma + Mistral + FastAPI) à partir d’une documentation technique.
 
 ## Contact
 
