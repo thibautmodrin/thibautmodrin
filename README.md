@@ -12,7 +12,7 @@ Python · Machine learning · Data engineering · APIs · Docker · SQL · GenAI
 
 1. **[cathq-predictive-quality](https://github.com/thibautmodrin/cathq-predictive-quality)** — Projet MLOps junior : prédiction de la qualité en extrusion de cathéters, avec mise en service légère du modèle, monitoring, réentraînement conditionnel et intégration continue.
 2. **[HPP_Prediction_Lean](https://github.com/thibautmodrin/HPP_Prediction_Lean)** — Estimation du risque d’hémorragie du post-partum sévère dès l’admission : modèle simple, seuil métier et démonstration déployable, volontairement épurée.
-3. **[vitizen_rag](https://github.com/thibautmodrin/vitizen_rag)** — Assistant RAG pédagogique appuyé sur une documentation technique viticole.
+3. **[vitizen_rag](https://github.com/thibautmodrin/vitizen_rag)** — Assistant phytosanitaire appuyé sur une documentation technique viticole.
 
 ## Contact
 
