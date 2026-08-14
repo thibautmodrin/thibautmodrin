@@ -21,6 +21,27 @@ from .watchlist import load_voices, match_voice
 
 TAG_RE = re.compile(r"<[^>]+>")
 SOURCE_SUFFIX_RE = re.compile(r"\s+[-–—]\s+[^-–—]+$")
+SOURCE_WEIGHTS = {
+    "the information": 45,
+    "reuters": 42,
+    "bloomberg": 42,
+    "associated press": 40,
+    "ap news": 40,
+    "axios": 36,
+    "electrek": 34,
+    "teslarati": 34,
+    "spacenews": 34,
+    "fortune": 32,
+    "not a tesla app": 28,
+}
+
+
+def source_weight(name: str) -> int:
+    lowered = (name or "").lower()
+    for key, weight in SOURCE_WEIGHTS.items():
+        if key in lowered:
+            return weight
+    return 12
 
 
 def load_sources(path: str | None = None) -> dict:
@@ -55,12 +76,12 @@ def parse_feed(raw: bytes | str, source_name: str, hinted: str, voices=None) -> 
         author = clean_text(entry.get("author") or "")
         source = _entry_source(entry) or source_name
         handle = ""
-        voice = match_voice(author or source, handle, title, text, voices)
-        weight = 12
-        if voice:
-            weight = max(voice.weight, 40)
-        elif source.lower() in {"reuters", "bloomberg", "the information"}:
-            weight = 35
+        author_voice = match_voice(author or source, handle, "", "", voices)
+        weight = source_weight(source)
+        if author_voice and author_voice.category in {"official", "journalist"}:
+            weight = max(weight, 28)
+        elif author_voice:
+            weight = max(weight, author_voice.weight)
         item_id = hashlib.sha256((url or title).encode("utf-8")).hexdigest()[:20]
         items.append(
             Item(
@@ -75,7 +96,7 @@ def parse_feed(raw: bytes | str, source_name: str, hinted: str, voices=None) -> 
                 published_at=published,
                 author=author or source,
                 author_handle=handle,
-                voice_id=voice.id if voice else "",
+                voice_id=author_voice.id if author_voice else "",
                 weight=weight,
             )
         )

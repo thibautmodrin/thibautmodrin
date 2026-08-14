@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import re
-from collections import defaultdict
 
 from .models import Cluster, DailyReport, Item, Quote, Voice
 from .store import now_iso
@@ -18,14 +17,15 @@ STOP = {
 HOOKS = {
     "roadster", "robotaxi", "cybercab", "cybertruck", "optimus", "starship",
     "starlink", "gigafactory", "fsd", "supercharger", "megapack", "falcon",
-    "starbase", "model", "catch",
+    "starbase",
 }
 SAID_RE = re.compile(
     r"(?P<who>[A-Z][\w.'’\-]+(?:\s+[A-Z][\w.'’\-]+){0,3})\s+"
-    r"(?:said|says|told|wrote|posted|tweeted|warned|called|announced|explained|"
+    r"(?:said|says|told|tells|wrote|posted|tweeted|warned|called|announced|"
+    r"explained|teased|joked|added|claims|claimed|"
     r"a déclaré|a dit|a prévenu|a annoncé)\s+"
     r"(?P<body>.+?)(?:[.!?]|$)",
-    re.S,
+    re.I | re.S,
 )
 
 
@@ -67,7 +67,7 @@ def cluster_items(items: list[Item], company: str, threshold: float = 0.28) -> l
             if similar_titles(seed_tokens, tokens(other.title), threshold):
                 members.append(other)
                 used.add(other.id)
-        members.sort(key=lambda i: (-i.weight, i.published_at))
+        members.sort(key=lambda i: (-i.weight, i.source_kind != "x", -len(i.text)))
         top = members[0]
         sources = list(dict.fromkeys(m.source_name for m in members))
         clusters.append(
@@ -99,10 +99,9 @@ def summarize_company(name: str, clusters: list[Cluster], items: list[Item], quo
     related = [
         q
         for q in quotes
-        if name.lower() in q.role.lower()
-        or name.lower() in q.text.lower()
-        or (name == "Tesla" and q.category in {"tesla_exec", "investor", "voice"})
-        or (name == "SpaceX" and q.category in {"spacex_exec"})
+        if name.lower() in q.text.lower()
+        or (name == "Tesla" and q.category in {"investor", "voice"} and "spacex" not in q.text.lower())
+        or (name == "SpaceX" and q.category == "spacex_exec")
     ]
     if related:
         q = related[0]
@@ -140,7 +139,11 @@ def extract_quotes(items: list[Item], voices: tuple[Voice, ...]) -> list[Quote]:
             voice = _voice_from_who(who, item, voices)
             if voice is None or not body:
                 continue
-            key = f"{voice.id}:{body[:80]}"
+            if voice.category == "official" and who.strip().lower() not in _official_names(voice):
+                continue
+            if _is_thin_quote(body):
+                continue
+            key = f"{voice.id}:{_norm_quote(body)}"
             if key in seen:
                 continue
             seen.add(key)
@@ -156,31 +159,20 @@ def extract_quotes(items: list[Item], voices: tuple[Voice, ...]) -> list[Quote]:
                     weight=voice.weight,
                 )
             )
-        if item.voice_id and item.voice_id in by_id and item.source_kind == "rss":
-            voice = by_id[item.voice_id]
-            if voice.category in {"tesla_exec", "spacex_exec", "investor", "official"}:
-                key = f"{voice.id}:title:{item.title[:80]}"
-                if key not in seen:
-                    seen.add(key)
-                    found.append(
-                        Quote(
-                            voice_id=voice.id,
-                            name=voice.name,
-                            role=voice.role,
-                            category=voice.category,
-                            text=_clip(item.title),
-                            source_name=item.source_name,
-                            url=item.url,
-                            weight=max(voice.weight - 15, 20),
-                        )
-                    )
     found.sort(key=lambda q: -q.weight)
     return found
 
 
 def tokens(text: str) -> set[str]:
     words = re.findall(r"[a-zA-Z0-9]{3,}", (text or "").lower())
-    return {w for w in words if w not in STOP}
+    normed = set()
+    for word in words:
+        if word in STOP:
+            continue
+        if word.endswith("s") and len(word) > 5:
+            word = word[:-1]
+        normed.add(word)
+    return normed
 
 
 def jaccard(a: set[str], b: set[str]) -> float:
@@ -204,10 +196,16 @@ def _headline(clusters: list[Cluster], fallback: str) -> str:
 
 
 def _cluster_blurb(members: list[Item]) -> str:
+    title_tokens = tokens(members[0].title)
     for member in members:
-        text = member.text.strip()
-        if len(text) > 80:
-            return _clip(text, 280)
+        text = re.sub(r"The post .*", "", member.text, flags=re.I).strip()
+        if len(text) < 90:
+            continue
+        if re.search(r"\bpodcast\b|this week.s episode|subscribe", text, re.I):
+            continue
+        if jaccard(title_tokens, tokens(text)) > 0.72:
+            continue
+        return _clip(text, 280)
     return ""
 
 
@@ -220,11 +218,11 @@ def _clip(text: str, limit: int = 240) -> str:
 
 
 def _voice_from_who(who: str, item: Item, voices: tuple[Voice, ...]) -> Voice | None:
-    who_l = who.lower()
+    who_l = who.lower().strip()
     best = None
     for voice in voices:
-        aliases = (voice.name, voice.handle, *voice.aliases)
-        if any(alias.lower() in who_l or who_l in alias.lower() for alias in aliases if len(alias) >= 4):
+        names = {voice.name.lower(), voice.handle.lower(), *(a.lower() for a in voice.aliases)}
+        if who_l in names or any(re.search(rf"\b{re.escape(n)}\b", who_l) and len(n) >= 5 for n in names):
             if best is None or voice.weight > best.weight:
                 best = voice
     if best:
@@ -232,3 +230,22 @@ def _voice_from_who(who: str, item: Item, voices: tuple[Voice, ...]) -> Voice | 
     if item.voice_id:
         return next((v for v in voices if v.id == item.voice_id), None)
     return None
+
+
+def _official_names(voice: Voice) -> set[str]:
+    return {voice.name.lower(), voice.handle.lower(), *(a.lower() for a in voice.aliases)}
+
+
+def _norm_quote(text: str) -> str:
+    text = re.sub(r"\s+", " ", text).lower()
+    text = re.sub(
+        r"\b(reuters|fortune|bloomberg|the motley fool|aol|electrek|teslarati|axios|yahoo|benzinga|seeking alpha)\b.*$",
+        "",
+        text,
+    )
+    return text[:90].strip()
+
+
+def _is_thin_quote(text: str) -> bool:
+    cleaned = re.sub(r"[^a-zA-Z0-9 ]", "", text).strip()
+    return len(cleaned) < 18

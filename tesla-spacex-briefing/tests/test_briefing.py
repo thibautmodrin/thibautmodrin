@@ -43,6 +43,62 @@ def test_match_elon_and_cathie():
     assert cathie is not None and cathie.id == "cathie"
 
 
+def test_musk_headline_is_not_a_quote_without_speech():
+    voices = load_voices()
+    items = [
+        Item(
+            "h1",
+            "2026-08-14",
+            "spacex",
+            "rss",
+            "Example",
+            "Elon Musk's SpaceX Stake Is Worth More Than $900 Billion",
+            "",
+            "https://example.com/stake",
+            "2026-08-14T12:00:00+00:00",
+        )
+    ]
+    assert extract_quotes(items, voices) == []
+
+
+def test_said_becomes_a_quote():
+    voices = load_voices()
+    items = [
+        Item(
+            "h2",
+            "2026-08-14",
+            "tesla",
+            "rss",
+            "Electrek",
+            "Tesla Roadster demo",
+            "Elon Musk said the demonstration will be difficult to execute.",
+            "https://example.com/demo",
+            "2026-08-14T12:00:00+00:00",
+        )
+    ]
+    quotes = extract_quotes(items, voices)
+    assert any(q.voice_id == "elonmusk" and "difficult" in q.text for q in quotes)
+
+
+def test_capitalized_says_in_headline():
+    voices = load_voices()
+    items = [
+        Item(
+            "h3",
+            "2026-08-14",
+            "spacex",
+            "rss",
+            "Motley Fool",
+            "Elon Musk Says SpaceX Will Try to Catch a Returning Starship This Month",
+            "",
+            "https://example.com/catch",
+            "2026-08-14T12:00:00+00:00",
+        )
+    ]
+    quotes = extract_quotes(items, voices)
+    assert any(q.voice_id == "elonmusk" and "Starship" in q.text for q in quotes)
+
+
 def test_quotes_from_reported_speech():
     voices = load_voices()
     raw = (FIXTURES / "tesla_rss.xml").read_bytes()
