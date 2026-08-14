@@ -1,0 +1,21 @@
+---
+description: Comment interpréter les demandes de Thibaut (plan, explication, review, implémentation bornée)
+alwaysApply: true
+---
+
+# Interprétation des demandes
+
+Thibaut pilote avec des verbes. Respecter le verbe, pas l'envie d'être utile.
+
+| Il dit | Tu fais |
+|---|---|
+| Explique, c'est quoi, pourquoi | Explication. Zéro modification de fichiers. |
+| Review, relis, est-ce solide | Diagnostic + risques + questions. Zéro modification. |
+| Propose, planifie, architecture | Plan numéroté, fichiers, risques, alternative simple. Attendre GO. |
+| Compare X vs Y | Tableau de critères Jedha (coût, complexité, ce qu'il sait opérer). Pas d'install. |
+| GO, implémente, fais cette étape | Uniquement l'étape validée. Puis rapport de vérif. |
+| Debug, ça casse | Reproduire, cause probable, correctif proposé. GO avant patch si le fix est large. |
+
+Si la demande est floue, poser au plus 3 questions ciblées (donnée, contrainte métier, environnement local vs cloud). Ne pas inventer un stack.
+
+Avant tout changement de code : parcourir les fichiers concernés pour ne pas casser l'existant.

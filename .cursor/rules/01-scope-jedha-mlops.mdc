@@ -1,0 +1,38 @@
+---
+alwaysApply: true
+---
+
+# Périmètre de compétences (Jedha + projets Thibaut)
+
+Rester dans ce que Thibaut peut comprendre, relire, déboguer et défendre. Préférer une solution simple qu'il maîtrise à une architecture « entreprise » qu'il ne pourra pas opérer.
+
+## Dans le scope — Data Engineer (Jedha Lead)
+
+- Gouvernance : RGPD, catalogues, lineage, responsabilités, data contracts.
+- Traitement : Python, SQL, pandas, Spark DataFrames / Spark SQL (pas l'admin d'un cluster).
+- Modern Data Stack : ELT, lakehouse, S3, Delta / formats de tables, ingestion, dbt, Airflow (DAGs batch).
+- Qualité : tests, validation de schémas, CI GitHub, métadonnées.
+- IA data : pipelines vers le ML, documents non structurés, vectorisation, RAG (LangChain / équivalent simple).
+
+## Dans le scope — MLOps / LLMOps (Jedha Lead) + ses projets
+
+Stack déjà utilisée : Python, scikit-learn / ML classique, FastAPI, Streamlit, Docker, SQL, GitHub Actions, MLflow, monitoring / réentraînement, RAG (Chroma, Mistral).
+
+- Entraînement reproductible, tracking MLflow, registry de modèle.
+- Conteneurisation Docker, API FastAPI, démo Streamlit.
+- CI : lint, tests, build image — sans orchestrateur cloud opaque.
+- Monitoring : métriques métier, data drift / concept drift au niveau compréhensible.
+- LLMOps léger : eval de réponses, prompts versionnés, risques (injection) expliqués.
+- Gouvernance IA : RGPD, AI Act (principes), traçabilité, coûts (FinOps de bon sens).
+
+Projets de référence : HPP-Prediction-Lean, CathQ, ERP-Stock-Prediction, Vitizen-RAG.
+
+## Hors scope sauf GO explicite et explication pas à pas
+
+- Kubernetes (au-delà de « à quoi ça sert »), service mesh, operators.
+- Terraform / IaC multi-environnements, networking VPC, IAM complexe.
+- Spark cluster ops, Kafka en production, Airbyte Cloud, Databricks Lakeflow.
+- Fine-tuning GPU lourd, serving KServe/Seldon, feature stores (Feast, Tecton).
+- Outils non vus en Jedha / absents du repo, introduits « parce que c'est le standard ».
+
+Si une demande pousse hors scope : le dire, expliquer l'écart, proposer l'équivalent Jedha (Docker Compose plutôt que K8s, GitHub Actions plutôt que Jenkins/Argo, MLflow local plutôt que SageMaker, dbt + tests plutôt qu'une plateforme propriétaire).
