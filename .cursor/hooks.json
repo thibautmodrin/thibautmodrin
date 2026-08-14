@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "python3 .cursor/hooks/garde-actions.py shell",
+        "matcher": "(^|[\\s;&|(])(rm|git|gh|docker|docker-compose|kubectl|helm|terraform|tofu|aws|gcloud|az|psql|mysql|mongosh|mongo|sqlite3|dropdb|createdb|alembic|airflow|mlflow|dvc|pip|pip3|poetry|uv|conda|npm|yarn|pnpm|ssh|scp|rsync|crontab|curl|wget|chmod|chown|sudo|su)[\\s]|DROP |drop table|TRUNCATE|truncate table|DELETE FROM|delete from",
+        "timeout": 10,
+        "failClosed": true
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": "python3 .cursor/hooks/garde-actions.py ecriture",
+        "matcher": "Write|Delete",
+        "timeout": 10,
+        "failClosed": false
+      }
+    ]
+  }
+}

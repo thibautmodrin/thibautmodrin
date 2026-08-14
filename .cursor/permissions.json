@@ -1,0 +1,19 @@
+{
+  "autoRun": {
+    "allow_instructions": [
+      "Autorise les commandes de lecture et d'inspection : git status, git diff, git log, ls, cat, head, rg, docker ps, docker logs, pip list.",
+      "Autorise l'exécution des tests et du lint du projet : pytest, ruff, black --check, mypy, make test, make lint.",
+      "Autorise le démarrage local d'un service ou d'un conteneur du projet ainsi que les appels HTTP vers localhost."
+    ],
+    "block_instructions": [
+      "Toute commande qui ajoute, retire ou change la version d'une dépendance doit être validée : pip install d'un paquet nommé, poetry add, uv add, conda install, npm install d'un paquet.",
+      "Toute commande qui écrit sur un dépôt distant ou réécrit l'historique doit être validée : git push, git commit --amend, git rebase, git reset --hard, git clean, fusion de pull request.",
+      "Toute commande qui touche une infrastructure ou un service cloud doit être validée : terraform, kubectl, helm, aws, gcloud, az, docker push.",
+      "Toute commande destructrice sur des données ou des métadonnées doit être validée : DROP, TRUNCATE, DELETE sans clause WHERE, dropdb, airflow db reset, mlflow gc, docker compose down -v, docker system prune, suppression de volume.",
+      "Toute migration de schéma de base de données doit être validée, y compris alembic upgrade et alembic downgrade.",
+      "Toute écriture dans data/, artifacts/ ou mlruns/, et tout déclenchement de réentraînement ou de déploiement, doivent être validés.",
+      "Toute commande qui télécharge un script depuis Internet et l'exécute directement doit être refusée.",
+      "Toute commande qui écrit en dehors du dépôt courant doit être validée."
+    ]
+  }
+}

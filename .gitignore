@@ -1,0 +1,11 @@
+# Journal des décisions du garde-fou Cursor (local, jamais versionné)
+.cursor/hooks/journal.log
+
+# Sauvegardes créées par scripts/installer-kit.sh --force
+*.bak
+
+# Bruit d'environnement
+__pycache__/
+.venv/
+venv/
+.DS_Store
