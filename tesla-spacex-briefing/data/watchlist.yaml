@@ -1,0 +1,227 @@
+# Voix qui ont du poids : direction, comptes officiels, investisseurs, relais suivis.
+# weight : 100 = parole d'entreprise / CEO, 80 = cadre, 70 = gros investisseur, 50 = relais.
+voices:
+  - id: elonmusk
+    handle: elonmusk
+    name: Elon Musk
+    aliases: ["Elon Musk", "Musk"]
+    role: CEO Tesla et SpaceX
+    category: tesla_exec
+    companies: [tesla, spacex]
+    weight: 100
+
+  - id: tesla
+    handle: Tesla
+    name: Tesla
+    aliases: ["Tesla Inc", "Tesla, Inc."]
+    role: Compte officiel Tesla
+    category: official
+    companies: [tesla]
+    weight: 95
+
+  - id: spacex
+    handle: SpaceX
+    name: SpaceX
+    aliases: ["Space Exploration Technologies"]
+    role: Compte officiel SpaceX
+    category: official
+    companies: [spacex]
+    weight: 95
+
+  - id: franz
+    handle: vonholzhausen
+    name: Franz von Holzhausen
+    aliases: ["Franz von Holzhausen", "von Holzhausen"]
+    role: Design chief Tesla
+    category: tesla_exec
+    companies: [tesla]
+    weight: 80
+
+  - id: gwynne
+    handle: GwynneShotwell
+    name: Gwynne Shotwell
+    aliases: ["Gwynne Shotwell", "Shotwell"]
+    role: Présidente SpaceX
+    category: spacex_exec
+    companies: [spacex]
+    weight: 85
+
+  - id: taneja
+    handle: vaibhavtaneja
+    name: Vaibhav Taneja
+    aliases: ["Vaibhav Taneja", "Taneja"]
+    role: CFO Tesla
+    category: tesla_exec
+    companies: [tesla]
+    weight: 80
+
+  - id: tomzhu
+    handle: tomzhu
+    name: Tom Zhu
+    aliases: ["Tom Zhu"]
+    role: Opérations Tesla
+    category: tesla_exec
+    companies: [tesla]
+    weight: 75
+
+  - id: ashok
+    handle: ashokelluswamy
+    name: Ashok Elluswamy
+    aliases: ["Ashok Elluswamy"]
+    role: Autopilot / IA Tesla
+    category: tesla_exec
+    companies: [tesla]
+    weight: 75
+
+  - id: cathie
+    handle: CathieDWood
+    name: Cathie Wood
+    aliases: ["Cathie Wood", "ARK Invest", "ARK"]
+    role: Investisseuse (ARK)
+    category: investor
+    companies: [tesla]
+    weight: 70
+
+  - id: arkinvest
+    handle: ARKInvest
+    name: ARK Invest
+    aliases: ["ARK Investment"]
+    role: Fonds investisseur Tesla
+    category: investor
+    companies: [tesla]
+    weight: 68
+
+  - id: ross
+    handle: RossGerber
+    name: Ross Gerber
+    aliases: ["Ross Gerber"]
+    role: Investisseur Tesla
+    category: investor
+    companies: [tesla]
+    weight: 65
+
+  - id: garyblack
+    handle: garyblack00
+    name: Gary Black
+    aliases: ["Gary Black"]
+    role: Investisseur / gérant
+    category: investor
+    companies: [tesla]
+    weight: 65
+
+  - id: chamath
+    handle: chamath
+    name: Chamath Palihapitiya
+    aliases: ["Chamath Palihapitiya", "Chamath"]
+    role: Investisseur
+    category: investor
+    companies: [tesla, spacex]
+    weight: 60
+
+  - id: rinehart
+    handle: GinaRinehart
+    name: Gina Rinehart
+    aliases: ["Gina Rinehart"]
+    role: Investisseuse SpaceX
+    category: investor
+    companies: [spacex]
+    weight: 60
+
+  - id: sawyer
+    handle: SawyerMerritt
+    name: Sawyer Merritt
+    aliases: ["Sawyer Merritt"]
+    role: Relais Tesla / SpaceX
+    category: voice
+    companies: [tesla, spacex]
+    weight: 50
+
+  - id: wholemars
+    handle: WholeMarsBlog
+    name: Whole Mars Blog
+    aliases: ["WholeMarsBlog", "Omar Qazi"]
+    role: Investisseur / commentateur Tesla
+    category: voice
+    companies: [tesla]
+    weight: 50
+
+  - id: farzad
+    handle: farzyness
+    name: Farzad Mesbahi
+    aliases: ["Farzad Mesbahi", "Farzad"]
+    role: Ancien Tesla, commentateur
+    category: voice
+    companies: [tesla]
+    weight: 48
+
+  - id: teslaconomics
+    handle: Teslaconomics
+    name: Teslaconomics
+    aliases: ["Teslaconomics"]
+    role: Relais investisseurs Tesla
+    category: voice
+    companies: [tesla]
+    weight: 45
+
+  - id: davelee
+    handle: DaveLeeTSLA
+    name: Dave Lee
+    aliases: ["Dave Lee"]
+    role: Relais Tesla
+    category: voice
+    companies: [tesla]
+    weight: 45
+
+  - id: troy
+    handle: TroyTeslike
+    name: Troy Teslike
+    aliases: ["Troy Teslike"]
+    role: Estimations livraisons Tesla
+    category: voice
+    companies: [tesla]
+    weight: 45
+
+  - id: teslarati
+    handle: Teslarati
+    name: Teslarati
+    aliases: ["Teslarati"]
+    role: Média Tesla
+    category: journalist
+    companies: [tesla, spacex]
+    weight: 40
+
+  - id: electrek
+    handle: electrekco
+    name: Electrek
+    aliases: ["Electrek"]
+    role: Média Tesla / EV
+    category: journalist
+    companies: [tesla]
+    weight: 40
+
+  - id: ericberger
+    handle: SciGuySpace
+    name: Eric Berger
+    aliases: ["Eric Berger"]
+    role: Journaliste spatial (Ars)
+    category: journalist
+    companies: [spacex]
+    weight: 55
+
+  - id: nasaspaceflight
+    handle: NASASpaceflight
+    name: NASASpaceflight
+    aliases: ["NASASpaceflight", "NSF"]
+    role: Relais lancements
+    category: journalist
+    companies: [spacex]
+    weight: 50
+
+  - id: timdodd
+    handle: Erdayastronaut
+    name: Tim Dodd
+    aliases: ["Everyday Astronaut", "Tim Dodd"]
+    role: Relais Starship
+    category: voice
+    companies: [spacex]
+    weight: 48
