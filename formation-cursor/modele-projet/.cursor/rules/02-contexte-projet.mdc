@@ -1,0 +1,17 @@
+---
+description: Contexte de CE repo — à remplir (20 lignes max) pour que l'assistant ne réinvente pas le projet
+alwaysApply: true
+---
+
+# Contexte projet (à compléter)
+
+- Nom :
+- Objectif métier (1 phrase) :
+- Stack réelle (libs déjà dans le repo) :
+- Comment lancer les tests :
+- Comment lancer l’app / le job :
+- Où sont les données (chemins) ; ce qu’il ne faut JAMAIS commit :
+- Points sensibles (PII, seuil métier, modèle en prod) :
+
+Quand tu proposes un changement : t’aligner sur cette stack et ces commandes.
+Ne pas inventer un second mode de lancement.

@@ -1,0 +1,57 @@
+---
+description: Périmètre de compétences Jedha Data Engineer + MLOps — rester dans le scope junior maîtrisable
+alwaysApply: true
+---
+
+# Scope Jedha Data Engineer + MLOps
+
+Profil : junior ML / Data Engineer. Stack réelle : Python, SQL, ML, FastAPI,
+Docker, Streamlit, GitHub Actions, RAG (Chroma), notions MLflow / monitoring.
+
+Toute proposition doit rester **expliquable et opérable par lui** sans équipe
+plateforme senior. Préférer la solution frugale qui fait le job.
+
+## Dans le scope (privilégier)
+
+- Python (pandas, scikit-learn, jobs batch), SQL, tests `pytest`
+- APIs FastAPI, démos Streamlit
+- Docker + docker-compose (un service ou une petite stack)
+- CI GitHub Actions (lint, tests, build image)
+- Qualité data : schémas, asserts, tests de contrat, checks nuls / types
+- ELT / transformations style dbt (SQL + tests), DAGs Airflow **simples**
+- MLflow (tracking, registry basique), sauvegarde modèle + métadonnées
+- Monitoring drift / data quality (rapports, alertes simples, logs structurés)
+- RAG : chunking, embeddings, Chroma, FastAPI, évaluation qualitative
+- Gouvernance : RGPD (minimisation, pas de PII inutile), lineage documenté,
+  data contracts, secrets hors git
+- Stockage objet (S3-compatible) et formats parquet / delta **au niveau bootcamp**
+
+## Hors scope par défaut (demander un OK écrit + justifier le coût)
+
+- Kubernetes / Helm / operators en production
+- Terraform multi-environnements, mesh réseau complexe
+- Spark cluster, Kafka, Flink, streaming temps réel avancé
+- Fine-tuning LLM / training GPU distribué
+- Feature store enterprise, serving KServe/Seldon
+- Microservices, event-sourcing, over-engineering "big tech"
+- Nouvelles libs si la stdlib / la stack actuelle suffit
+
+Si une demande sort du scope : le dire, proposer un **équivalent dans le
+périmètre** (ex. compose au lieu de k8s, job cron/Actions au lieu d'un cluster),
+et n'avancer sur le chemin complexe **que s'il le demande**.
+
+## Choix techniques par défaut
+
+Docker Compose > Kubernetes  
+GitHub Actions > Jenkins / GitLab CI non demandé  
+FastAPI + job batch > serving distribué  
+pytest + checks explicites > framework data-quality lourd  
+sklearn / modèle déjà dans le repo > nouveau deep learning  
+Une pipeline lisible > abstraction magique
+
+## Cohérence projet
+
+Avant de proposer un changement : lire les fichiers existants du projet.
+Ne pas casser une fonctionnalité. Réutiliser les conventions déjà là
+(structure, noms, style). Ne pas "industrialiser" un prototype au-delà
+de ce qui est demandé.

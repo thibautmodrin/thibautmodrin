@@ -15,6 +15,10 @@ Python · Machine learning · Data engineering · APIs · Docker · SQL · GenAI
 3. **[ERP-Stock-Prediction](https://github.com/thibautmodrin/ERP-Stock-Prediction)** — Anticipation des ruptures de stock. Module prédictif FastAPI branché sur un ERP pour inventaire et ventes.
 4. **[Vitizen-RAG](https://github.com/thibautmodrin/Vitizen-RAG)** — Assistant phytosanitaire viticole. Réponses sourcées (Chroma + Mistral + FastAPI) à partir d’une documentation technique.
 
+## Méthode
+
+J’utilise un assistant de code (Cursor) sous **contrat de maîtrise** : proposition avant implémentation, stack Jedha Data Engineer / MLOps uniquement (Python, SQL, Docker, CI, MLflow, qualité de données), revue humaine obligatoire. Kit et prompts : [`formation-cursor/`](./formation-cursor/).
+
 ## Contact
 
 - Email : thibaut.modrin@gmail.com  
