@@ -9,7 +9,9 @@ horizon:
   start_year: 2026
   end_year: 2035
 
-# 2026 est une année mixte : H1 réel + H2 projeté.
+# 2026 est une année mixte : YTD réel + reste d'année au run-rate du dernier trimestre.
+# 2027-2035 croissent depuis CETTE graine (volumes FY d'assumptions), pas depuis le YTD.
+# L'ingestion Q3 ne réécrit pas ce bloc : le moteur applique effective_2026_seed().
 tesla_2026_seed:
   retail_deliveries: 1780000
   asp_auto: 42200
@@ -19,10 +21,11 @@ tesla_2026_seed:
   fsd_subs_eoy_m: 1.85
   legacy_robotaxi_fleet_eoy: 2500
   cybercab_in_commercial_eoy_share_of_production: 0.15
+  remaining_rule: last_quarter_run_rate
   note: >
     H1 2026 = 838 k livraisons / 22,3 GWh / 50,6 Md$ de CA.
-    FY 2026 retail ~1,78 M si H2 proche du run-rate Q2.
-    ASP Q2 = 42 730 $ ; on prend 42 200 $ FY (mix + crédits en baisse).
+    FY 2026 retail ~1,78 M si H2 proche du run-rate Q2 — c'est l'ancre des
+    CAGRs 2027-2035. Le FY affiché/modélisé en 2026 est YTD + run-rate.
 
 cybercab_shared:
   vehicle_life_years: 6

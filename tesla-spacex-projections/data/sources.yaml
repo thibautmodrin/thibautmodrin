@@ -78,6 +78,17 @@ tesla:
     note: "2026 0,18 Md$ ; 2027 1,8 ; 2028 7,0 ; 2029 22,3 ; 2030 42,4. Large dispersion."
     used_for:
       - calage du scénario de base (ordre de grandeur, pas copie)
+  - id: tesla_q3_ingest
+    type: fact
+    title: Ingestion Tesla Q3 2026 Update (quand le PDF existe)
+    url: https://assets-ir.tesla.com/tesla-contents/IR/TSLA-Q3-2026-Update.pdf
+    note: >
+      Au 14 août 2026 le PDF n'est pas en ligne (Tesla IR renvoie du HTML).
+      L'onglet Recalage cherche cette URL ; sans PDF, aucun trimestre n'est inventé.
+      Après revue, FY 2026 = YTD + run-rate Q3 pour Q4. 2027-2035 inchangés.
+    used_for:
+      - recalage 2026
+      - actuals Q3
   - id: tesla_spot_2026_08_13
     type: fact
     title: Cours Tesla (TSLA) clôture 13 août 2026

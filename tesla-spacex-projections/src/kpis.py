@@ -5,7 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from src.engine import Projection
-from src.load import goals, tesla_history, valuation as load_valuation
+from src.load import goals, valuation as load_valuation
+from src.tesla_seed import tesla_live_snapshot
 
 
 @dataclass
@@ -33,18 +34,17 @@ def _year_hit(values: list[tuple[int, float]], target: float) -> tuple[int | Non
 
 def tesla_kpis(proj: Projection) -> list[KpiStatus]:
     g = goals()["tesla_ceo_award_2025"]
-    hist = tesla_history()["snapshot_latest"]
+    hist = tesla_live_snapshot()
     tesla = proj.tesla
     start_cumul = hist["cumulative_deliveries_m"] * 1_000_000
-    # Les livraisons 2026-N s'ajoutent au cumul H1 2026. On évite de double-compter
-    # H1 en prenant le FY 2026 entier comme flux de l'année (approximation).
+    ytd_deliveries = float(hist.get("ytd_deliveries", hist.get("h1_deliveries", 0)))
+    # Les livraisons 2026-N s'ajoutent au cumul du dernier trimestre publié.
     cumul = start_cumul
     cumul_path: list[tuple[int, float]] = []
     for row in tesla:
-        # 2026 : on part du cumul Q2 et on ajoute ~H2 + Cybercab flotte nouvelle.
         if row.year == 2026:
-            h2_retail = max(row.retail_deliveries - hist["h1_deliveries"], 0)
-            cumul = start_cumul + h2_retail + row.cybercab_production
+            remaining_retail = max(row.retail_deliveries - ytd_deliveries, 0)
+            cumul = start_cumul + remaining_retail + row.cybercab_production
         else:
             cumul += row.retail_deliveries + row.cybercab_production
         cumul_path.append((row.year, cumul))

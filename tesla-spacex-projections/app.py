@@ -15,7 +15,7 @@ import streamlit as st
 
 from src.engine import history_spacex_frame, history_tesla_frame, project
 from src.kpis import spacex_kpis, tesla_kpis, tesla_market_kpis
-from src.load import assumptions, goals, sources, valuation as load_valuation
+from src.load import assumptions, clear_data_cache, data_fingerprint, goals, sources, valuation as load_valuation
 from src.montecarlo import delay_sensitivity, simulate
 from src.overrides import scale_to_anchor
 from src.rebase import published_quarters, spacex_ytd, tesla_2026_bridge
@@ -154,7 +154,7 @@ def kpi_card(col, label: str, value: str, delta: str | None = None):
 
 
 @st.cache_data(show_spinner=False)
-def run_scenario(name: str) -> dict:
+def run_scenario(name: str, data_ver: str) -> dict:
     proj = project(name)
     pack = {
         "tesla": proj.tesla_frame(),
@@ -265,7 +265,7 @@ def main() -> None:
         attach_valuation(active, scenario)
     else:
         attach_valuation(active, scenario, tesla_eveb, spacex_evs)
-    all_sc = {name: run_scenario(name) for name in scenarios}
+    all_sc = {name: run_scenario(name, data_fingerprint()) for name in scenarios}
 
     tabs = st.tabs(
         [
@@ -327,7 +327,7 @@ ne font que déformer une S-curve déjà documentée.
 
 ### Étape 2 ajoutée
 
-- Recalage YTD (pont H1 publié → FY)
+- Recalage YTD (pont publié → reste d'année au run-rate du dernier trimestre)
 - Monte-Carlo (400 tirages, seed fixe) sur année d'entrée, utilisation, prix/mile, coût/mile, échelle de production
 - Capex (cœur + flotte + Optimus interne) et FCF, plancher 25 Md$ en 2026
 - Optimus unitaire (interne = économie de main-d'œuvre) et Starship unitaire (vol externe seulement)
@@ -344,9 +344,13 @@ Le cours n'est **pas** un CAGR magique. Pour chaque année :
 - Dilution indicative : conservateur 0,5 %/an, base 0,8 %, objectifs 1,8 % (SBC + award CEO Tesla).
 - Les multiples **compressent** pendant que l'EBITDA monte : en scénario de base, le cours 2030 peut rester voisin du spot (~340 $). Un multiple figé (EV/EBITDA 50) donnerait beaucoup plus.
 
+### Ingestion Tesla Q3
+
+Pas de cron. Un bouton dans l'onglet Recalage télécharge l'Update deck officiel. Si Tesla IR renvoie du HTML, le trimestre n'est **pas** inventé. L'écriture YAML n'a lieu qu'après revue (CA, livraisons, GWh). Le FY 2026 devient YTD + run-rate Q3 pour Q4 ; **2027-2035 ne bougent pas**.
+
 ### Ce qui reste pour plus tard
 
-- Ingestion automatique des PDF Update decks
+- Ingestion SpaceX et cours spot
 - Capex / FCF SpaceX au même grain
 - Monte-Carlo sur Starlink ARPU, cadence Starship et multiples
         """
@@ -1013,31 +1017,75 @@ Le segment IA (xAI consolidé en 2026) reste le principal écart vers l'objectif
 
 
 def render_rebase(active: dict) -> None:
+    from src.ingest_tesla import DEFAULT_URL, apply_q3, fetch_update_pdf
+
     b = active["bridge"]
-    st.markdown("### Pont H1 publié → FY 2026 projeté")
+    rest = b.get("remaining_label") or "reste"
+    st.markdown("### Pont YTD publié → FY 2026 projeté")
     st.caption(
         f"Dernier trimestre publié : **{b['last_quarter']}** (au {b['as_of']}). "
-        f"Prochain print : **{b['next_print']}**. H2 n'est pas un fait — c'est l'implication du modèle."
+        f"Prochain print : **{b['next_print']}**. "
+        f"Le {rest} n'est pas un fait — c'est le run-rate du dernier trimestre × "
+        f"{b.get('remaining_quarters', '?')} trimestre(s). 2027-2035 ne sont pas recollés."
     )
     c1, c2, c3, c4 = st.columns(4)
-    kpi_card(c1, "CA H1 réel", fmt_md(b["h1_revenue_b"]))
-    kpi_card(c2, "CA H2 implicite", fmt_md(b["h2_implied_revenue_b"]))
-    kpi_card(c3, "CA FY projeté", fmt_md(b["fy_revenue_b"]), f"{b['h1_share_of_fy_revenue']*100:.0f} % déjà fait")
-    kpi_card(c4, "FCF H2 implicite", fmt_md(b["h2_implied_fcf_b"]), "H1 FCF " + fmt_md(b["h1_fcf_b"]))
+    kpi_card(c1, "CA YTD réel", fmt_md(b["ytd_revenue_b"]))
+    kpi_card(c2, f"CA {rest} implicite", fmt_md(b["remaining_implied_revenue_b"]))
+    kpi_card(c3, "CA FY projeté", fmt_md(b["fy_revenue_b"]), f"{b['ytd_share_of_fy_revenue']*100:.0f} % déjà fait")
+    kpi_card(c4, f"FCF {rest} implicite", fmt_md(b["remaining_implied_fcf_b"]), "YTD FCF " + fmt_md(b["ytd_fcf_b"]))
 
     c5, c6, c7, c8 = st.columns(4)
-    kpi_card(c5, "Livraisons H1", fmt_int(b["h1_deliveries"]))
-    kpi_card(c6, "Livraisons H2 implicites", fmt_int(b["h2_implied_deliveries"]))
-    kpi_card(c7, "Capex H1 / FY", f"{fmt_md(b['h1_capex_b'])} / {fmt_md(b['fy_capex_b'])}")
-    kpi_card(c8, "Stockage H1", f"{fmt_num(b['h1_storage_gwh'])} GWh")
+    kpi_card(c5, "Livraisons YTD", fmt_int(b["ytd_deliveries"]))
+    kpi_card(c6, f"Livraisons {rest} implicites", fmt_int(b["remaining_implied_deliveries"]))
+    kpi_card(c7, "Capex YTD / FY", f"{fmt_md(b['ytd_capex_b'])} / {fmt_md(b['fy_capex_b'])}")
+    kpi_card(c8, "Stockage YTD", f"{fmt_num(b['ytd_storage_gwh'])} GWh")
+
+    st.markdown("#### Ingestion Tesla Q3 2026")
+    st.caption(
+        "Télécharge uniquement l'Update deck officiel. Pas d'interpolation si le PDF n'existe pas. "
+        "L'écriture des YAML demande une confirmation."
+    )
+    already_q3 = any(str(r.get("quarter")) == "Q3-2026" for r in published_quarters())
+    if already_q3:
+        st.success("Q3-2026 est déjà dans `actuals.yaml`. Pas de second ingest.")
+    else:
+        if st.button("Chercher le PDF Q3 Tesla", type="primary"):
+            with st.spinner("Téléchargement Tesla IR…"):
+                st.session_state["q3_ingest"] = fetch_update_pdf(DEFAULT_URL)
+        probe = st.session_state.get("q3_ingest")
+        if probe is not None:
+            if probe.status == "not_published":
+                st.warning(probe.message)
+            elif probe.status in {"error", "incomplete", "wrong_quarter"}:
+                st.error(probe.message)
+                if probe.fields:
+                    st.json(probe.fields)
+            elif probe.status == "parsed":
+                st.info(probe.message)
+                st.dataframe(pd.DataFrame(probe.preview), hide_index=True, use_container_width=True)
+                if probe.can_apply():
+                    if st.button("Écrire les faits Q3 dans les YAML"):
+                        try:
+                            written = apply_q3(probe)
+                            st.cache_data.clear()
+                            clear_data_cache()
+                            st.session_state.pop("q3_ingest", None)
+                            st.success("Écrit : " + ", ".join(written["written"]) + ". L'app relit les fichiers.")
+                            st.rerun()
+                        except ValueError as exc:
+                            st.error(str(exc))
+                else:
+                    st.warning("Champs requis manquants : pas d'écriture.")
 
     st.markdown("#### Trimestres Tesla déjà publiés")
     qdf = pd.DataFrame(published_quarters())
+    show_cols = [c for c in ["quarter", "revenue_b", "revenue_auto_b", "deliveries", "storage_gwh", "ocf_b", "capex_b", "fcf_b", "source"] if c in qdf.columns]
     st.dataframe(
-        qdf.rename(
+        qdf[show_cols].rename(
             columns={
                 "quarter": "Trimestre",
                 "revenue_b": "CA",
+                "revenue_auto_b": "Auto",
                 "deliveries": "Livraisons",
                 "storage_gwh": "GWh",
                 "ocf_b": "OCF",
@@ -1055,10 +1103,10 @@ def render_rebase(active: dict) -> None:
         f"Q2 2026 : Starlink {fmt_md(sx['q2_connectivity_b'])} · Launch {fmt_md(sx['q2_space_b'])} · "
         f"IA {fmt_md(sx['q2_ai_b'])} · {fmt_num(sx['starlink_subs_m'])} M d'abonnés. {sx['note']}"
     )
-    st.markdown("#### Checklist au prochain print (Q3)")
+    st.markdown(f"#### Checklist au prochain print ({b['next_print']})")
     for item in b["checklist"]:
         st.write(f"- {item}")
-    st.info("Pour recaler : mettre à jour `data/actuals.yaml` et `data/tesla_history.yaml`. Ne pas interpoler un trimestre non publié.")
+    st.info(b.get("rebase_rule") or "YTD + run-rate. Ne pas interpoler un trimestre non publié.")
 
 
 @st.cache_data(show_spinner=True)

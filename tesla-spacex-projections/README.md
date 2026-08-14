@@ -33,16 +33,26 @@ streamlit run app.py
 | Cours Tesla / SpaceX | EV = w × EBITDA × EV/EBITDA + (1−w) × CA × EV/S, puis / actions diluées | clôture 13 août 2026 ; multiples en compression |
 | Incertitude | Monte-Carlo (année d'entrée, util, prix, coût, volumes) | seed fixe |
 
-## Recalage trimestriel
+## Recalage trimestriel (Tesla Q3)
 
-Mettre à jour `data/actuals.yaml` et `data/tesla_history.yaml` au prochain print.
-Ne pas interpoler un trimestre non publié. L'onglet *Recalage 2026* montre le pont H1 réel → FY.
+L'onglet *Recalage 2026* cherche le PDF officiel
+`TSLA-Q3-2026-Update.pdf`. S'il n'existe pas, **rien n'est inventé**.
+S'il existe : aperçu champ / ancien / nouveau, puis confirmation avant
+écriture dans `data/actuals.yaml`.
+
+Règle B : FY 2026 = YTD publié + run-rate du dernier trimestre × trimestres
+restants. Les volumes 2027-2035 restent calés sur la graine d'`assumptions.yaml`.
+
+```bash
+python -m src.ingest_tesla          # sonde le PDF (dry-run)
+python -m src.ingest_tesla --apply  # écrit seulement si Q3 est complet
+```
 
 ## Structure
 
 ```
 data/          historique, actuals, hypothèses, jalons, valorisation, sources
-src/           moteur, Cybercab, Optimus, Starship, cash, MC, cours, recalage
-tests/         formules et cohérences (étapes 1-3)
+src/           moteur, Cybercab, ingest Q3, cash, MC, cours, recalage
+tests/         formules et cohérences (étapes 1-3 + ingest)
 app.py         interface Streamlit
 ```

@@ -1,4 +1,8 @@
-"""Chargement des YAML de données."""
+"""Chargement des YAML de données.
+
+Le cache est invalidé si le fichier change (mtime + taille), pour que
+l'ingestion Q3 soit visible sans redémarrer le process.
+"""
 
 from __future__ import annotations
 
@@ -12,43 +16,60 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 
 
-def _read(name: str) -> dict[str, Any]:
+def _stat_key(name: str) -> tuple[int, int]:
+    path = DATA / name
+    st = path.stat()
+    return (st.st_mtime_ns, st.st_size)
+
+
+@lru_cache(maxsize=32)
+def _read_cached(name: str, mtime_ns: int, size: int) -> dict[str, Any]:
     path = DATA / name
     with path.open(encoding="utf-8") as handle:
         return yaml.safe_load(handle)
 
 
-@lru_cache(maxsize=8)
+def _read(name: str) -> dict[str, Any]:
+    mtime_ns, size = _stat_key(name)
+    return _read_cached(name, mtime_ns, size)
+
+
+def data_fingerprint() -> str:
+    parts = []
+    for path in sorted(DATA.glob("*.yaml")):
+        st = path.stat()
+        parts.append(f"{path.name}:{st.st_mtime_ns}:{st.st_size}")
+    return "|".join(parts)
+
+
+def clear_data_cache() -> None:
+    _read_cached.cache_clear()
+
+
 def tesla_history() -> dict[str, Any]:
     return _read("tesla_history.yaml")
 
 
-@lru_cache(maxsize=8)
 def spacex_history() -> dict[str, Any]:
     return _read("spacex_history.yaml")
 
 
-@lru_cache(maxsize=8)
 def assumptions() -> dict[str, Any]:
     return _read("assumptions.yaml")
 
 
-@lru_cache(maxsize=8)
 def goals() -> dict[str, Any]:
     return _read("goals.yaml")
 
 
-@lru_cache(maxsize=8)
 def sources() -> dict[str, Any]:
     return _read("sources.yaml")
 
 
-@lru_cache(maxsize=8)
 def actuals() -> dict[str, Any]:
     return _read("actuals.yaml")
 
 
-@lru_cache(maxsize=8)
 def valuation() -> dict[str, Any]:
     return _read("valuation.yaml")
 

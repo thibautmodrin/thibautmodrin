@@ -1,7 +1,16 @@
 # Trimestres publiés. Quand Q3 2026 sort, on ajoute une ligne ici —
 # on ne « complète » pas le trimestre par interpolation.
+# Mix auto/énergie/services Q1-Q2 2026 : Financial Summary du Q2 Update.
 
 as_of: "2026-08-14"
+
+ingest:
+  tesla_q3:
+    year: 2026
+    quarter: Q3
+    update_pdf_url: https://assets-ir.tesla.com/tesla-contents/IR/TSLA-Q3-2026-Update.pdf
+    required_fields: [revenue_b, deliveries, storage_gwh]
+    remaining_rule: last_quarter_run_rate
 
 tesla_2026:
   as_of: "2026-06-30"
@@ -19,7 +28,7 @@ tesla_2026:
   capex_guidance_b: 25.0
   cybercab_in_commercial_fleet: false
   checklist:
-    - "CA et mix (auto / énergie / services) — 10-Q"
+    - "CA et mix (auto / énergie / services) — Update + 10-Q"
     - "Livraisons et ASP"
     - "GWh déployés"
     - "Abonnés FSD et miles robotaxi payants"
@@ -33,8 +42,8 @@ tesla_quarters:
   - {quarter: "Q2-2025", revenue_b: 22.496, deliveries: 384122, storage_gwh: 9.6, ocf_b: 2.540, capex_b: 2.394, fcf_b: 0.146, source: tesla_q2_2026}
   - {quarter: "Q3-2025", revenue_b: 28.095, deliveries: 497099, storage_gwh: 12.5, ocf_b: 6.238, capex_b: 2.248, fcf_b: 3.990, source: tesla_q2_2026}
   - {quarter: "Q4-2025", revenue_b: 24.901, deliveries: 418227, storage_gwh: 14.2, ocf_b: 3.813, capex_b: 2.393, fcf_b: 1.420, source: tesla_q4_2025}
-  - {quarter: "Q1-2026", revenue_b: 22.387, deliveries: 358023, storage_gwh: 8.8, ocf_b: 3.937, capex_b: 2.493, fcf_b: 1.444, source: tesla_q2_2026}
-  - {quarter: "Q2-2026", revenue_b: 28.236, deliveries: 480126, storage_gwh: 13.5, ocf_b: 4.697, capex_b: 5.789, fcf_b: -1.092, source: tesla_q2_2026}
+  - {quarter: "Q1-2026", revenue_b: 22.387, revenue_auto_b: 16.234, revenue_energy_b: 2.408, revenue_services_b: 3.745, deliveries: 358023, storage_gwh: 8.8, ocf_b: 3.937, capex_b: 2.493, fcf_b: 1.444, fsd_subs_m: 1.28, cash_b: 44.743, cumulative_deliveries_m: 9.2, source: tesla_q2_2026}
+  - {quarter: "Q2-2026", revenue_b: 28.236, revenue_auto_b: 20.516, revenue_energy_b: 3.139, revenue_services_b: 4.581, deliveries: 480126, storage_gwh: 13.5, ocf_b: 4.697, capex_b: 5.789, fcf_b: -1.092, fsd_subs_m: 1.48, cash_b: 43.524, cumulative_deliveries_m: 9.7, asp_auto: 42730, source: tesla_q2_2026}
 
 spacex_2026:
   as_of: "2026-06-30"

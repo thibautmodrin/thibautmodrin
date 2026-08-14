@@ -17,6 +17,7 @@ from src.cybercab import UnitEconomics, project_cybercab
 from src.load import assumptions, spacex_history, tesla_history, years as horizon_years
 from src.optimus import OptimusYear, project_optimus
 from src.starship import LaunchYear, project_launch
+from src.tesla_seed import effective_2026_seed
 
 
 def _lerp(start: float, end: float, steps: int) -> list[float]:
@@ -137,6 +138,7 @@ def project_tesla(scenario: str, overrides: dict[str, Any] | None = None) -> tup
     tesla_sc = dict(sc["tesla"])
     cab_sc = dict(sc["cybercab"])
     seed = cfg["tesla_2026_seed"]
+    live = effective_2026_seed(seed)
     shared = cfg["cybercab_shared"]
     cash_cfg = cfg["cash"]
 
@@ -153,7 +155,9 @@ def project_tesla(scenario: str, overrides: dict[str, Any] | None = None) -> tup
         for k in range(1, n - i2030)
     ]
     retail = retail_to_2030 + retail_after
+    retail[0] = float(live["retail_deliveries"])
     asp = _grow(seed["asp_auto"], tesla_sc["asp_auto_cagr"], n)
+    asp[0] = float(live["asp_auto"])
 
     storage_to_2030 = _grow(seed["storage_gwh"], tesla_sc["storage_cagr_to_2030"], i2030 + 1)
     storage_after = [
@@ -161,9 +165,12 @@ def project_tesla(scenario: str, overrides: dict[str, Any] | None = None) -> tup
         for k in range(1, n - i2030)
     ]
     storage = storage_to_2030 + storage_after
+    storage[0] = float(live["storage_gwh"])
     energy_asp = _grow(seed["asp_energy_per_gwh"], tesla_sc["energy_asp_cagr"], n)
     services = _grow(seed["services_ex_robotaxi_b"], tesla_sc["services_cagr"], n)
+    services[0] = float(live["services_ex_robotaxi_b"])
     fsd = _fsd_path(years, seed["fsd_subs_eoy_m"], tesla_sc["fsd_subs_2030_m"], tesla_sc["fsd_subs_2035_m"])
+    fsd[0] = float(live["fsd_subs_eoy_m"])
 
     cab_rows = project_cybercab(
         years=years,
