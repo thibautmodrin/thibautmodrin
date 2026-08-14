@@ -1,7 +1,8 @@
 """Collecte optionnelle des posts X (API v2 recent search).
 
 Sans jeton Bearer, le briefing s'appuie sur les flux RSS et les citations
-dans la presse. Variable d'environnement : X_BEARER_TOKEN.
+dans la presse. Jeton : variable d'environnement, `.streamlit/secrets.toml`,
+ou le champ de la barre latérale Streamlit.
 """
 
 from __future__ import annotations
@@ -9,7 +10,9 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import tomllib
 from datetime import datetime, timezone
+from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -19,10 +22,54 @@ from .models import Item, Voice
 from .watchlist import match_voice
 
 API = "https://api.x.com/2/tweets/search/recent"
+SECRETS_PATH = Path(__file__).resolve().parent.parent / ".streamlit" / "secrets.toml"
 
 
-def bearer_token() -> str:
-    return (os.environ.get("X_BEARER_TOKEN") or os.environ.get("TWITTER_BEARER_TOKEN") or "").strip()
+def bearer_token(path: Path | None = None) -> str:
+    for key in ("X_BEARER_TOKEN", "TWITTER_BEARER_TOKEN"):
+        value = (os.environ.get(key) or "").strip()
+        if value:
+            return value
+    data = _read_secrets(path or SECRETS_PATH)
+    return str(data.get("X_BEARER_TOKEN") or data.get("TWITTER_BEARER_TOKEN") or "").strip()
+
+
+def token_is_set(path: Path | None = None) -> bool:
+    return bool(bearer_token(path))
+
+
+def save_bearer_token(token: str, path: Path | None = None) -> Path:
+    dest = Path(path or SECRETS_PATH)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    data = _read_secrets(dest)
+    token = (token or "").strip()
+    if token:
+        data["X_BEARER_TOKEN"] = token
+    else:
+        data.pop("X_BEARER_TOKEN", None)
+        data.pop("TWITTER_BEARER_TOKEN", None)
+    dest.write_text(_dump_secrets(data), encoding="utf-8")
+    os.chmod(dest, 0o600)
+    return dest
+
+
+def _read_secrets(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    try:
+        return dict(tomllib.loads(path.read_text(encoding="utf-8")))
+    except (OSError, tomllib.TOMLDecodeError):
+        return {}
+
+
+def _dump_secrets(data: dict) -> str:
+    lines = ["# Hors git. Developer Portal X → projet → Keys and tokens → Bearer Token."]
+    for key, value in data.items():
+        if not isinstance(value, str):
+            continue
+        escaped = value.replace("\\", "\\\\").replace('"', '\\"')
+        lines.append(f'{key} = "{escaped}"')
+    return "\n".join(lines) + "\n"
 
 
 def watchlist_query(voices: tuple[Voice, ...], extra: str, limit: int = 12) -> str:

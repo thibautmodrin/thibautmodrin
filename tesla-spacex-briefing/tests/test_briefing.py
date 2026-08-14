@@ -8,7 +8,7 @@ from src.summarize import build_report, cluster_items, extract_quotes, jaccard, 
 from src.watchlist import load_voices, match_voice
 from src.monthcal import month_weeks, shift_month
 from src.store import connect, get_report, items_for_date, prune, save_report, upsert_items
-from src.x_client import watchlist_query
+from src.x_client import bearer_token, save_bearer_token, watchlist_query
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -159,3 +159,13 @@ def test_x_query_includes_watchlist():
     assert "from:elonmusk" in q
     assert "from:Tesla" in q
     assert "-is:retweet" in q
+
+
+def test_bearer_token_from_secrets_file(monkeypatch, tmp_path):
+    monkeypatch.delenv("X_BEARER_TOKEN", raising=False)
+    monkeypatch.delenv("TWITTER_BEARER_TOKEN", raising=False)
+    secrets = tmp_path / "secrets.toml"
+    save_bearer_token("file-token-xyz", secrets)
+    assert bearer_token(secrets) == "file-token-xyz"
+    monkeypatch.setenv("X_BEARER_TOKEN", "env-token")
+    assert bearer_token(secrets) == "env-token"

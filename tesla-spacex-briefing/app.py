@@ -16,6 +16,7 @@ from src.ingest import scan
 from src.monthcal import WEEKDAYS, month_label, month_weeks, shift_month
 from src.store import connect, get_report, items_for_date, report_dates
 from src.watchlist import load_voices, voice_by_id
+from src.x_client import bearer_token, save_bearer_token, token_is_set
 
 st.set_page_config(
     page_title="Tesla × SpaceX — briefing",
@@ -64,11 +65,35 @@ def main() -> None:
         "paroles des voix qui ont du poids, calendrier conservé plusieurs semaines."
     )
 
+    with st.sidebar:
+        st.header("Clé Bearer X")
+        st.caption(
+            "Developer Portal X → projet → **Keys and tokens** → Bearer Token. "
+            "Sans clé, le scan reste sur la presse."
+        )
+        if token_is_set():
+            st.success("Une clé est déjà enregistrée sur le serveur.")
+        else:
+            st.warning("Aucune clé pour l’instant.")
+        pasted = st.text_input(
+            "Coller le Bearer Token",
+            type="password",
+            placeholder="AAAAAAAA…",
+            help="Le jeton n’est pas envoyé dans git. Enregistre-le ici ou dans .streamlit/secrets.toml.",
+        )
+        if st.button("Enregistrer la clé"):
+            if pasted.strip():
+                save_bearer_token(pasted.strip())
+                st.success("Clé enregistrée. Tu peux scanner.")
+                st.rerun()
+            else:
+                st.error("Colle d’abord le jeton.")
+
     top = st.columns([1.4, 1, 1, 1.2])
     with top[0]:
         if st.button("Scanner les news maintenant", type="primary"):
             with st.spinner("Collecte des flux RSS et des posts X…"):
-                result = scan()
+                result = scan(token=pasted.strip() or None)
             st.session_state.last_scan = result
             if result.get("days"):
                 st.session_state.day = max(result["days"])
@@ -92,6 +117,11 @@ def main() -> None:
                 f"{st.session_state.last_scan['reports']} jours"
                 + (f", {err_n} avertissement(s)" if err_n else "")
             )
+            x_errs = [
+                err for err in (st.session_state.last_scan.get("errors") or []) if err.startswith("x:")
+            ]
+            if x_errs:
+                st.caption("X : " + x_errs[0][:180])
 
     _calendar(days_with_report)
     day = st.session_state.day

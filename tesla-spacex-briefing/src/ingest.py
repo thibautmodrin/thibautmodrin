@@ -13,7 +13,7 @@ from .watchlist import load_voices
 from .x_client import fetch_x_posts
 
 
-def scan(db_path=None, backfill: bool | None = None) -> dict:
+def scan(db_path=None, backfill: bool | None = None, token: str | None = None) -> dict:
     sources = load_sources()
     voices = load_voices()
     conn = connect(db_path)
@@ -35,6 +35,7 @@ def scan(db_path=None, backfill: bool | None = None) -> dict:
             user_agent=sources.get("user_agent") or "TeslaSpaceXBriefing/1.0",
             timeout=int(sources.get("timeout_seconds") or 20),
             max_results=int(x_cfg.get("max_results") or 50),
+            token=token,
         )
         items.extend(x_items)
         errors.extend(x_errors)

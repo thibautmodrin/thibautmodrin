@@ -30,7 +30,21 @@ Les scans suivants ne prennent que la journée (flux `when:1d` + médias).
 | Electrek, Teslarati, SpaceNews | Médias spécialisés |
 | X (optionnel) | Posts des comptes de la watchlist, 7 derniers jours |
 
-X n'est interrogé que si `X_BEARER_TOKEN` (ou `TWITTER_BEARER_TOKEN`) est défini.
+X n'est interrogé que si un Bearer Token est fourni. Trois endroits, dans cet ordre :
+
+1. **Dans l'appli** (tablette / Chrome) : barre latérale → coller le jeton → *Enregistrer la clé*, puis *Scanner les news maintenant*.
+2. **Fichier local** `tesla-spacex-briefing/.streamlit/secrets.toml` (ignoré par git) :
+
+```toml
+X_BEARER_TOKEN = "AAAA..."
+```
+
+   Copier `.streamlit/secrets.toml.example` et coller le jeton du
+   [Developer Portal X](https://developer.x.com/en/portal/dashboard)
+   (projet → Keys and tokens → Bearer Token).
+
+3. **Variable d'environnement** `X_BEARER_TOKEN` (ou `TWITTER_BEARER_TOKEN`).
+
 Sans jeton, le briefing s'appuie sur la presse et les citations rapportées
 (« Musk a déclaré… », « Cathie Wood said… »).
 
