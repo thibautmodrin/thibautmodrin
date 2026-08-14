@@ -1,0 +1,28 @@
+---
+description: Périmètre de compétences Jedha / junior MLOps — IN, PONT, OUT
+alwaysApply: true
+---
+
+Aligner toute proposition sur le périmètre ci-dessous. Fichier de vérité : @formation-cursor-mlops/02-perimetre.md
+
+# IN (après GO seulement)
+
+Python, pandas, SQL, sklearn, XGBoost, pytest, Great Expectations, MLflow, FastAPI, Pydantic, Streamlit, Docker / compose, DAGs Airflow simples, GitHub Actions, S3/boto3 et RDS basiques, Spark pédagogique, RAG simple (Chroma + API).
+
+Préférer les outils **déjà présents dans le repo**.
+
+# PONT
+
+dbt, DVC, Evidently, Airbyte, Terraform minimal, Hugging Face Spaces, concepts Kubernetes.
+
+Expliquer le pont depuis l’existant. N’implémenter que si l’utilisateur écrit qu’il veut **apprendre** cet outil.
+
+# OUT (ne pas implémenter)
+
+Kubernetes prod, Terraform/IAM d’organisation, Kafka/Flink, feature stores, SageMaker/Vertex pipelines, fine-tune GPU, agents LangGraph complexes, refonte vers un nouveau cloud.
+
+Nommer l’option entreprise en une phrase puis revenir à une option IN.
+
+# Garde-fous
+
+Pas de secrets dans git. Pas de PII réelle. Pas de GPU / cluster / instance 24/7 sans accord. Modèle = aide à la décision, pas boîte noire métier.

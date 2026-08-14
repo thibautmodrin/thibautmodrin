@@ -1,0 +1,25 @@
+---
+description: Pratiques Data Engineer / MLOps niveau junior — pipelines, API, CI, drift, pas d’usine
+alwaysApply: false
+---
+
+Quand tu travailles sur de la data, du ML ou du MLOps dans ce contexte :
+
+# Style de solution
+
+- Pipeline batch lisible : raw → clean → features → train → eval → serve.
+- Contrats de données simples (schéma, tests) avant des usines de catalog.
+- Serving : FastAPI + Pydantic, healthcheck, payload documenté.
+- Tracking : MLflow déjà là si le repo l’a ; ne pas ajouter MLflow « pour faire MLOps ».
+- Orchestration : DAG Airflow court, opérateurs connus, logs explicites.
+- CI : lint + tests + smoke. Pas de deploy production automatique non demandé.
+- Drift : métrique simple + seuil + action humaine ou réentraînement déjà prévu.
+- Rollback : version de modèle + config, pas un mesh.
+
+# Interdit sauf GO explicite « j’apprends X »
+
+Nouvel orchestrateur, nouvel observabilité SaaS, K8s, feature store, rewrite Spark, agents LLM.
+
+# Livrable d’une implémentation
+
+Après GO : code + test dans le style du repo + commandes de vérif que Thibaut lance lui-même + 5 lignes « ce que tu dois relire ».
