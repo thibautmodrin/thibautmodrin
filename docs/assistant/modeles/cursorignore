@@ -1,0 +1,60 @@
+# Modèle de .cursorignore — à copier à la racine d'un projet sous le nom `.cursorignore`
+#
+# Ce que fait ce fichier : les chemins listés ne sont ni indexés ni lisibles par l'agent,
+# Tab, Cmd+K et les références @. Syntaxe identique à .gitignore.
+#
+# Limite à connaître : le terminal et les outils MCP ne sont pas couverts par ce filtre.
+# Il réduit le risque d'exposition, il ne le supprime pas.
+#
+# Conséquence pratique : l'agent ne pourra pas inspecter les données pour en déduire le schéma.
+# Pour qu'il reste utile, garder un extrait anonymisé versionné dans `data/samples/`.
+
+# --- Secrets et identifiants ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*credentials*
+*secret*
+id_rsa*
+id_ed25519*
+.aws/
+.gcloud/
+kubeconfig*
+
+# --- Données (confidentialité, RGPD, volume) ---
+data/raw/
+data/interim/
+data/processed/
+data/external/
+data/chroma/
+*.parquet
+*.feather
+*.sqlite
+*.sqlite3
+*.db
+
+# --- Artefacts et historiques d'expérience ---
+artifacts/
+mlruns/
+mlartifacts/
+*.joblib
+*.pkl
+*.pickle
+*.onnx
+*.h5
+*.pt
+*.pth
+
+# --- Bruit d'indexation ---
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+node_modules/
+.cursor/hooks/journal.log
