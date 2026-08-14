@@ -1,0 +1,47 @@
+# Trimestres publiés. Quand Q3 2026 sort, on ajoute une ligne ici —
+# on ne « complète » pas le trimestre par interpolation.
+
+as_of: "2026-08-14"
+
+tesla_2026:
+  as_of: "2026-06-30"
+  last_quarter: Q2
+  next_print: Q3
+  h1_revenue_b: 50.623
+  h1_auto_b: 36.750
+  h1_energy_b: 5.547
+  h1_services_b: 8.326
+  h1_deliveries: 838149
+  h1_storage_gwh: 22.3
+  h1_ocf_b: 8.634
+  h1_capex_b: 8.282
+  h1_fcf_b: 0.352
+  capex_guidance_b: 25.0
+  cybercab_in_commercial_fleet: false
+  checklist:
+    - "CA et mix (auto / énergie / services) — 10-Q"
+    - "Livraisons et ASP"
+    - "GWh déployés"
+    - "Abonnés FSD et miles robotaxi payants"
+    - "Cybercab en flotte commerciale (oui/non + estimation d'unités)"
+    - "OCF, capex, FCF, cash"
+    - "Villes robotaxi unsupervised ajoutées"
+  source: tesla_q2_2026
+
+tesla_quarters:
+  - {quarter: "Q1-2025", revenue_b: 19.335, deliveries: 336681, storage_gwh: 10.4, ocf_b: 2.156, capex_b: 1.492, fcf_b: 0.664, source: tesla_q4_2025}
+  - {quarter: "Q2-2025", revenue_b: 22.496, deliveries: 384122, storage_gwh: 9.6, ocf_b: 2.540, capex_b: 2.394, fcf_b: 0.146, source: tesla_q2_2026}
+  - {quarter: "Q3-2025", revenue_b: 28.095, deliveries: 497099, storage_gwh: 12.5, ocf_b: 6.238, capex_b: 2.248, fcf_b: 3.990, source: tesla_q2_2026}
+  - {quarter: "Q4-2025", revenue_b: 24.901, deliveries: 418227, storage_gwh: 14.2, ocf_b: 3.813, capex_b: 2.393, fcf_b: 1.420, source: tesla_q4_2025}
+  - {quarter: "Q1-2026", revenue_b: 22.387, deliveries: 358023, storage_gwh: 8.8, ocf_b: 3.937, capex_b: 2.493, fcf_b: 1.444, source: tesla_q2_2026}
+  - {quarter: "Q2-2026", revenue_b: 28.236, deliveries: 480126, storage_gwh: 13.5, ocf_b: 4.697, capex_b: 5.789, fcf_b: -1.092, source: tesla_q2_2026}
+
+spacex_2026:
+  as_of: "2026-06-30"
+  last_quarter: Q2
+  q2_connectivity_b: 4.29
+  q2_space_b: 0.962
+  q2_ai_b: 2.56
+  starlink_subs_m: 12.0
+  note: "Premier trimestre public post-IPO. Pas de série trimestrielle 2025 comparable (xAI consolidé en 2026)."
+  source: spacex_q2_2026

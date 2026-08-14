@@ -18,6 +18,9 @@ annual:
     operating_income: 6.523
     operating_margin: 0.121
     adj_ebitda: 11.722
+    ocf: 11.497
+    capex: 6.514
+    fcf: 4.983
     deliveries: 936222
     storage_gwh: 4.0
     fsd_subs_eoy_m: 0.4
@@ -33,6 +36,9 @@ annual:
     operating_income: 13.656
     operating_margin: 0.168
     adj_ebitda: 19.390
+    ocf: 14.724
+    capex: 7.163
+    fcf: 7.561
     deliveries: 1313851
     storage_gwh: 6.5
     fsd_subs_eoy_m: 0.5
@@ -48,6 +54,9 @@ annual:
     operating_income: 8.891
     operating_margin: 0.092
     adj_ebitda: 16.631
+    ocf: 13.256
+    capex: 8.899
+    fcf: 4.357
     deliveries: 1808581
     storage_gwh: 14.7
     fsd_subs_eoy_m: 0.6
@@ -63,6 +72,9 @@ annual:
     operating_income: 7.076
     operating_margin: 0.072
     adj_ebitda: 16.056
+    ocf: 14.923
+    capex: 11.342
+    fcf: 3.581
     deliveries: 1789226
     storage_gwh: 31.4
     fsd_subs_eoy_m: 0.8
@@ -78,6 +90,9 @@ annual:
     operating_income: 4.355
     operating_margin: 0.046
     adj_ebitda: 14.596
+    ocf: 14.747
+    capex: 8.527
+    fcf: 6.220
     deliveries: 1636129
     storage_gwh: 46.7
     fsd_subs_eoy_m: 1.1
@@ -134,4 +149,8 @@ snapshot_latest:
     2,5 M de miles payants cumulés impliquent une flotte encore négligeable.
     On ancre 400 unités (Model Y) à fin H1 2026, confiance faible.
   capex_2026_guidance_b: 25.0
+  h1_ocf_b: 8.634
+  h1_capex_b: 8.282
+  h1_fcf_b: 0.352
+  cash_q2_b: 43.524
   source: tesla_q2_2026

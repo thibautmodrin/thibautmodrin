@@ -59,6 +59,12 @@ scenarios:
       optimus_units: [500, 2000, 8000, 20000, 40000, 70000, 100000, 140000, 180000, 220000]
       optimus_asp: 25000
       optimus_gm: -0.10
+      optimus_internal_share: [1.00, 1.00, 0.95, 0.90, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60]
+      optimus_utilization: [0.20, 0.25, 0.30, 0.35, 0.38, 0.40, 0.42, 0.42, 0.42, 0.42]
+      optimus_hours_per_day: 16
+      optimus_wage_per_hour: 22
+      optimus_opex_per_hour: 9
+      capex_core_b: [24.7, 16.0, 13.0, 12.0, 11.0, 10.5, 10.0, 9.5, 9.5, 9.0]
     cybercab:
       production: [8000, 40000, 90000, 160000, 250000, 350000, 450000, 550000, 650000, 750000]
       tesla_owned_share: [0.95, 0.90, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60, 0.55, 0.50]
@@ -69,11 +75,20 @@ scenarios:
       retire_rate: 0.02
       legacy_robotaxi_peak: 8000
       legacy_peak_year: 2028
+      commercial_start_year: 2028
+      start_year_deploy_share: 0.35
     spacex:
       starlink_subs_eoy_m: [16.0, 20.0, 24.0, 28.0, 32.0, 35.0, 38.0, 40.0, 42.0, 44.0]
       starlink_arpu_month: [72, 70, 68, 66, 64, 63, 62, 62, 61, 60]
       launch_revenue_b: [4.4, 4.6, 5.0, 5.5, 6.2, 7.0, 8.0, 9.0, 10.0, 11.0]
       launch_oi_margin: [-0.40, -0.25, -0.10, 0.00, 0.05, 0.08, 0.10, 0.12, 0.12, 0.12]
+      falcon_external: [42, 38, 32, 26, 20, 16, 12, 10, 8, 6]
+      falcon_price_m: 67
+      launch_other_b: [1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3]
+      starship_flights: [8, 18, 35, 55, 80, 110, 140, 170, 200, 230]
+      starship_external_share: [0.00, 0.04, 0.08, 0.10, 0.12, 0.14, 0.15, 0.16, 0.16, 0.16]
+      starship_price_m: [110, 90, 75, 65, 55, 50, 48, 45, 42, 40]
+      starship_cost_m: [120, 95, 70, 55, 45, 40, 36, 34, 32, 30]
       ai_revenue_b: [9.0, 11.0, 13.0, 15.0, 17.0, 19.0, 21.0, 23.0, 25.0, 27.0]
       ai_oi_margin: [-0.80, -0.50, -0.30, -0.15, -0.05, 0.00, 0.05, 0.08, 0.10, 0.12]
       connectivity_oi_margin: [0.36, 0.35, 0.34, 0.33, 0.32, 0.32, 0.31, 0.31, 0.30, 0.30]
@@ -105,6 +120,12 @@ scenarios:
       optimus_units: [2000, 15000, 50000, 120000, 250000, 400000, 550000, 700000, 850000, 1000000]
       optimus_asp: 22000
       optimus_gm: 0.15
+      optimus_internal_share: [1.00, 0.90, 0.70, 0.50, 0.40, 0.35, 0.30, 0.30, 0.25, 0.25]
+      optimus_utilization: [0.25, 0.35, 0.45, 0.50, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55]
+      optimus_hours_per_day: 16
+      optimus_wage_per_hour: 28
+      optimus_opex_per_hour: 8
+      capex_core_b: [24.5, 20.0, 18.0, 16.5, 15.5, 15.0, 14.5, 14.0, 13.5, 13.0]
     cybercab:
       # Production 2026 lente (Musk) puis S-curve. 2030 = 1,5 M < cible 2 M.
       production: [15000, 180000, 450000, 900000, 1500000, 1800000, 2000000, 2100000, 2200000, 2300000]
@@ -116,11 +137,20 @@ scenarios:
       retire_rate: 0.03
       legacy_robotaxi_peak: 25000
       legacy_peak_year: 2028
+      commercial_start_year: 2027
+      start_year_deploy_share: 0.50
     spacex:
       starlink_subs_eoy_m: [18.0, 25.0, 33.0, 42.0, 50.0, 57.0, 63.0, 68.0, 72.0, 75.0]
       starlink_arpu_month: [74, 72, 70, 70, 72, 74, 76, 78, 80, 82]
       launch_revenue_b: [4.6, 5.2, 6.5, 8.5, 12.0, 16.0, 20.0, 24.0, 28.0, 32.0]
       launch_oi_margin: [-0.35, -0.15, 0.00, 0.08, 0.12, 0.15, 0.18, 0.20, 0.20, 0.20]
+      falcon_external: [45, 40, 34, 28, 22, 18, 14, 12, 10, 8]
+      falcon_price_m: 67
+      launch_other_b: [1.5, 1.8, 2.4, 3.2, 4.0, 4.6, 5.2, 5.6, 6.0, 6.4]
+      starship_flights: [12, 30, 70, 140, 220, 320, 420, 520, 620, 720]
+      starship_external_share: [0.00, 0.08, 0.15, 0.22, 0.28, 0.32, 0.34, 0.35, 0.35, 0.35]
+      starship_price_m: [120, 90, 70, 55, 45, 40, 36, 32, 30, 28]
+      starship_cost_m: [110, 80, 55, 40, 30, 26, 23, 21, 20, 18]
       ai_revenue_b: [10.0, 16.0, 25.0, 40.0, 65.0, 95.0, 130.0, 170.0, 210.0, 250.0]
       ai_oi_margin: [-0.70, -0.40, -0.20, -0.05, 0.05, 0.10, 0.15, 0.18, 0.20, 0.22]
       connectivity_oi_margin: [0.38, 0.37, 0.36, 0.36, 0.37, 0.38, 0.38, 0.39, 0.39, 0.40]
@@ -151,6 +181,12 @@ scenarios:
       optimus_units: [5000, 80000, 250000, 600000, 1000000, 1500000, 2500000, 4000000, 6000000, 8000000]
       optimus_asp: 20000
       optimus_gm: 0.35
+      optimus_internal_share: [0.80, 0.50, 0.30, 0.20, 0.15, 0.10, 0.10, 0.10, 0.10, 0.10]
+      optimus_utilization: [0.30, 0.45, 0.55, 0.60, 0.62, 0.62, 0.62, 0.62, 0.62, 0.62]
+      optimus_hours_per_day: 16
+      optimus_wage_per_hour: 35
+      optimus_opex_per_hour: 7
+      capex_core_b: [24.0, 26.0, 28.0, 30.0, 28.0, 26.0, 24.0, 22.0, 20.0, 18.0]
     cybercab:
       production: [40000, 500000, 1500000, 2500000, 3500000, 4000000, 4000000, 4000000, 4000000, 4000000]
       tesla_owned_share: [0.90, 0.80, 0.65, 0.50, 0.40, 0.35, 0.30, 0.30, 0.30, 0.30]
@@ -161,12 +197,43 @@ scenarios:
       retire_rate: 0.04
       legacy_robotaxi_peak: 80000
       legacy_peak_year: 2027
+      commercial_start_year: 2026
+      start_year_deploy_share: 0.15
     spacex:
       starlink_subs_eoy_m: [25.0, 40.0, 60.0, 85.0, 110.0, 130.0, 145.0, 155.0, 165.0, 175.0]
       starlink_arpu_month: [78, 80, 85, 90, 95, 100, 105, 108, 110, 112]
       launch_revenue_b: [5.0, 8.0, 15.0, 30.0, 50.0, 70.0, 90.0, 110.0, 130.0, 150.0]
       launch_oi_margin: [-0.20, 0.00, 0.10, 0.18, 0.22, 0.25, 0.28, 0.30, 0.30, 0.30]
+      falcon_external: [48, 42, 35, 28, 20, 15, 12, 10, 8, 6]
+      falcon_price_m: 67
+      launch_other_b: [1.8, 3.0, 6.0, 10.0, 14.0, 18.0, 22.0, 26.0, 30.0, 34.0]
+      starship_flights: [20, 80, 250, 600, 1200, 2000, 2800, 3500, 4200, 5000]
+      starship_external_share: [0.05, 0.12, 0.20, 0.30, 0.40, 0.45, 0.48, 0.50, 0.50, 0.50]
+      starship_price_m: [100, 70, 50, 40, 30, 25, 22, 20, 18, 16]
+      starship_cost_m: [90, 55, 35, 22, 15, 12, 10, 9, 8, 8]
       # Le 1 000 Md$ 2030 de Musk est presque entièrement de l'IA / compute.
       ai_revenue_b: [12.0, 40.0, 120.0, 350.0, 800.0, 900.0, 1000.0, 1100.0, 1200.0, 1300.0]
       ai_oi_margin: [-0.50, -0.20, 0.00, 0.10, 0.18, 0.22, 0.25, 0.28, 0.30, 0.30]
       connectivity_oi_margin: [0.40, 0.42, 0.45, 0.48, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50]
+
+cash:
+  ocf_conversion: 0.92
+  cash_start_b: 44.059
+  capex_2026_floor_b: 25.0
+  note: >
+    Conversion OCF/EBITDA 2024-2025 ≈ 0,93-1,01. On prend 0,92 (WC + impôts cash).
+    Cash de départ = FY 2025 (44,1 Md$). Guidage capex 2026 > 25 Md$ = plancher.
+
+montecarlo:
+  start_years: [2026, 2027, 2028, 2029]
+  start_year_probs: [0.10, 0.45, 0.30, 0.15]
+  production_log_sigma: 0.35
+  util_2030_mean: 0.48
+  util_2030_sd: 0.10
+  price_2030_mean: 0.45
+  price_2030_sd: 0.12
+  cost_2030_mean: 0.28
+  cost_2030_sd: 0.08
+  note: >
+    Probabilités d'entrée commerciale Cybercab calées sur le fait de juillet 2026
+    (pas encore en flotte) et le commentaire Musk « matériel en 2027 ».

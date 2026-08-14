@@ -59,6 +59,19 @@ tesla:
     title: Prix robotaxi Austin ~1,40 $/mile (2026, presse spécialisée)
     used_for:
       - ancrage prix/mile 2026
+  - id: tesla_capex_2026
+    type: fact
+    title: Guidage capex Tesla 2026 (> 25 Md$)
+    used_for:
+      - plancher de capex 2026
+      - FCF négatif attendu sur H2 2026
+  - id: tesla_optimus_unit
+    type: assumption
+    title: Économie unitaire Optimus (interne vs vendu)
+    note: "Les robots internes ne sont pas du CA GAAP. Économie = heures × (salaire substitué − opex)."
+    used_for:
+      - ROI Optimus interne
+      - split GAAP / économique
   - id: street_robotaxi_2026_2030
     type: estimate
     title: Consensus Street CA robotaxi (Motley Fool / FactSet, mai 2026)
@@ -88,6 +101,13 @@ spacex:
     note: "ARR 100 Md$ d'ici décembre 2026 ; 1 000 Md$ de CA en 2030. Traités comme scénario objectifs, pas comme base."
     used_for:
       - jalons SpaceX « Objectifs »
+  - id: spacex_starship_unit
+    type: assumption
+    title: Cadence et coût Starship (scénarisé)
+    note: "FAA Starbase autorise jusqu'à 25 vols/an ; le reste suppose d'autres sites. Coût/vol cible Musk non observé."
+    used_for:
+      - CA launch bottom-up
+      - contribution par vol externe
   - id: spacex_sacra
     type: estimate
     title: Sacra — SpaceX revenue 2024-2025

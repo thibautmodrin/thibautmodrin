@@ -43,6 +43,11 @@ def sources() -> dict[str, Any]:
     return _read("sources.yaml")
 
 
+@lru_cache(maxsize=8)
+def actuals() -> dict[str, Any]:
+    return _read("actuals.yaml")
+
+
 def years() -> list[int]:
     horizon = assumptions()["horizon"]
     return list(range(int(horizon["start_year"]), int(horizon["end_year"]) + 1))

@@ -16,6 +16,9 @@ import streamlit as st
 from src.engine import history_spacex_frame, history_tesla_frame, project
 from src.kpis import spacex_kpis, tesla_kpis
 from src.load import assumptions, goals, sources
+from src.montecarlo import delay_sensitivity, simulate
+from src.overrides import scale_to_anchor
+from src.rebase import published_quarters, spacex_ytd, tesla_2026_bridge
 
 st.set_page_config(
     page_title="Tesla × SpaceX — projections & jalons",
@@ -53,31 +56,20 @@ def fmt_num(value: float, digits: int = 1) -> str:
     return f"{value:,.{digits}f}".replace(",", " ").replace(".", ",")
 
 
-def apply_overrides(scenario: str, production_2030, price, cost, util, starlink_2030):
+def apply_overrides(scenario: str, production_2030, price, cost, util, starlink_2030, start_year: int):
     cfg = assumptions()["scenarios"][scenario]
     cab = dict(cfg["cybercab"])
     sx = dict(cfg["spacex"])
     years = list(range(2026, 2036))
     i2030 = years.index(2030)
-
-    def scale(series, new_anchor, anchor_idx=i2030, floor=None, cap=None):
-        base_anchor = series[anchor_idx]
-        factor = new_anchor / base_anchor if base_anchor else 1
-        out = [v * factor for v in series]
-        if floor is not None:
-            out = [max(v, floor) for v in out]
-        if cap is not None:
-            out = [min(v, cap) for v in out]
-        return out
-
     overrides = {
-        "production": scale(list(map(float, cab["production"])), production_2030),
-        "price_per_mile": scale(list(map(float, cab["price_per_mile"])), price, floor=0.15, cap=2.5),
-        "cost_per_mile": scale(list(map(float, cab["cost_per_mile"])), cost, floor=0.12, cap=1.2),
-        "utilization": scale(list(map(float, cab["utilization"])), util, cap=0.7),
+        "production": scale_to_anchor(list(map(float, cab["production"])), production_2030, i2030),
+        "price_per_mile": scale_to_anchor(list(map(float, cab["price_per_mile"])), price, i2030, floor=0.15, cap=2.5),
+        "cost_per_mile": scale_to_anchor(list(map(float, cab["cost_per_mile"])), cost, i2030, floor=0.12, cap=1.2),
+        "utilization": scale_to_anchor(list(map(float, cab["utilization"])), util, i2030, cap=0.7),
+        "commercial_start_year": int(start_year),
     }
-    # project_tesla only picks tesla/cybercab keys; starlink is spacex-only.
-    return overrides, scale(list(map(float, sx["starlink_subs_eoy_m"])), starlink_2030)
+    return overrides, scale_to_anchor(list(map(float, sx["starlink_subs_eoy_m"])), starlink_2030, i2030)
 
 
 def line_chart(title: str, series: dict[str, tuple[list, list]], ylabel: str, color_map: dict | None = None) -> go.Figure:
@@ -133,36 +125,39 @@ def run_scenario(name: str) -> dict:
         "tesla": proj.tesla_frame(),
         "spacex": proj.spacex_frame(),
         "cybercab": proj.cybercab_frame(),
+        "optimus": proj.optimus_frame(),
+        "launch": proj.launch_frame(),
         "narrative": proj.notes[0] if proj.notes else "",
         "tesla_kpis": [k.__dict__ for k in tesla_kpis(proj)],
         "spacex_kpis": [k.__dict__ for k in spacex_kpis(proj)],
+        "bridge": tesla_2026_bridge(proj).__dict__,
     }
 
 
 def project_with_overrides(scenario: str, cab_overrides: dict, starlink_path: list[float] | None):
-    from src.engine import project_tesla, project_spacex, Projection
     from src.load import assumptions as load_assumptions
 
-    tesla, cab = project_tesla(scenario, cab_overrides)
-    spacex = project_spacex(scenario)
+    proj = project(scenario, cab_overrides)
+    spacex_rows = proj.spacex
     if starlink_path is not None:
-        # Recalcule Connectivity avec la série Starlink ajustée, mêmes ARPU/marges.
         sx_cfg = load_assumptions()["scenarios"][scenario]["spacex"]
-        for i, row in enumerate(spacex):
+        for i, row in enumerate(spacex_rows):
             row.starlink_subs_m = starlink_path[i]
             row.revenue_connectivity_b = starlink_path[i] * sx_cfg["starlink_arpu_month"][i] * 12 / 1000
             row.oi_connectivity_b = row.revenue_connectivity_b * sx_cfg["connectivity_oi_margin"][i]
             row.revenue_total_b = row.revenue_connectivity_b + row.revenue_launch_b + row.revenue_ai_b
             row.operating_income_b = row.oi_connectivity_b + row.oi_launch_b + row.oi_ai_b
             row.operating_margin = row.operating_income_b / row.revenue_total_b if row.revenue_total_b else 0
-    proj = Projection(scenario=scenario, tesla=tesla, spacex=spacex, cybercab=cab)
     return {
         "tesla": proj.tesla_frame(),
         "spacex": proj.spacex_frame(),
         "cybercab": proj.cybercab_frame(),
+        "optimus": proj.optimus_frame(),
+        "launch": proj.launch_frame(),
         "narrative": load_assumptions()["scenarios"][scenario]["narrative"].strip(),
         "tesla_kpis": [k.__dict__ for k in tesla_kpis(proj)],
         "spacex_kpis": [k.__dict__ for k in spacex_kpis(proj)],
+        "bridge": tesla_2026_bridge(proj).__dict__,
     }
 
 
@@ -172,8 +167,8 @@ def main() -> None:
 
     st.title("Tesla × SpaceX — CA, marges et jalons")
     st.caption(
-        "Étape 1 · modèle bottom-up 2026-2035 · faits et hypothèses séparés · "
-        "données au 14 août 2026 (Tesla Q2, SpaceX Q2 post-IPO)."
+        "Étape 2 · bottom-up 2026-2035 · recalage YTD · Monte-Carlo régulation/prix/utilisation · "
+        "capex/FCF · Optimus et Starship unitaires · données au 14 août 2026."
     )
 
     with st.sidebar:
@@ -186,9 +181,17 @@ def main() -> None:
         )
         st.info(cfg["scenarios"][scenario]["narrative"].strip())
         st.divider()
+        st.subheader("Levier n°1 — entrée commerciale")
+        cab0 = cfg["scenarios"][scenario]["cybercab"]
+        start_year = st.select_slider(
+            "Année où le Cybercab entre en flotte payante",
+            options=[2026, 2027, 2028, 2029],
+            value=int(cab0["commercial_start_year"]),
+        )
+        st.caption("En juillet 2026 le Cybercab n'est pas en flotte commerciale. Le scénario de base part sur 2027.")
+        st.divider()
         st.subheader("Sensibilités (ancrage 2030)")
         st.caption("Les sliders déforment la S-curve du scénario choisi, sans réécrire l'historique.")
-        cab0 = cfg["scenarios"][scenario]["cybercab"]
         sx0 = cfg["scenarios"][scenario]["spacex"]
         prod_2030 = st.slider("Production Cybercab 2030", 50_000, 4_000_000, int(cab0["production"][4]), 50_000)
         price_2030 = st.slider("Prix / mile 2030 ($)", 0.20, 1.50, float(cab0["price_per_mile"][4]), 0.05)
@@ -197,7 +200,7 @@ def main() -> None:
         sl_2030 = st.slider("Abonnés Starlink 2030 (M)", 15.0, 150.0, float(sx0["starlink_subs_eoy_m"][4]), 1.0)
         compare = st.checkbox("Comparer les 3 scénarios (ignore les sliders)", value=True)
 
-    cab_over, sl_path = apply_overrides(scenario, prod_2030, price_2030, cost_2030, util_2030, sl_2030)
+    cab_over, sl_path = apply_overrides(scenario, prod_2030, price_2030, cost_2030, util_2030, sl_2030, start_year)
     active = project_with_overrides(scenario, cab_over, sl_path)
     all_sc = {name: run_scenario(name) for name in scenarios}
 
@@ -205,8 +208,11 @@ def main() -> None:
         [
             "Méthode",
             "Tableau de bord",
+            "Recalage 2026",
             "Tesla",
             "Cybercab & ROI",
+            "Incertitude",
+            "Cash",
             "SpaceX",
             "Objectifs vs modèle",
             "Sources",
@@ -218,14 +224,20 @@ def main() -> None:
     with tabs[1]:
         render_dashboard(active, all_sc, compare)
     with tabs[2]:
-        render_tesla(active, all_sc, compare)
+        render_rebase(active)
     with tabs[3]:
-        render_cybercab(active)
+        render_tesla(active, all_sc, compare)
     with tabs[4]:
-        render_spacex(active, all_sc, compare)
+        render_cybercab(active)
     with tabs[5]:
-        render_goals(active)
+        render_uncertainty(scenario)
     with tabs[6]:
+        render_cash(active, all_sc, compare)
+    with tabs[7]:
+        render_spacex(active, all_sc, compare)
+    with tabs[8]:
+        render_goals(active)
+    with tabs[9]:
         render_sources()
 
 
@@ -238,20 +250,27 @@ Un tableur cacherait les formules. Ici chaque chiffre de 2026-2035 sort d'un
 moteur Python testé : volumes × prix, puis marges par activité. Les sliders
 ne font que déformer une S-curve déjà documentée.
 
-### Règles de rigueur (étape 1)
+### Règles de rigueur
 
 1. **Séparer les types de chiffres** — fait SEC / earnings, estimation S-1 ou presse, hypothèse de scénario.
-2. **Bottom-up, pas un CAGR sur le CA total** — Tesla = retail × ASP + GWh × prix + services + robotaxi (flotte × miles × $/mile) + Optimus. SpaceX = abonnés × ARPU + launch + IA.
+2. **Bottom-up, pas un CAGR sur le CA total** — Tesla = retail × ASP + GWh × prix + services + robotaxi (flotte × miles × $/mile) + Optimus **vendu**. SpaceX = abonnés × ARPU + Falcon externe + Starship externe + IA.
 3. **Trois récits, un seul ancrage historique** — le scénario *Objectifs* est la trajectoire Musk / plan CEO, **pas** la prévision centrale.
-4. **Ne pas double-compter le FSD** — le CA FSD n'est pas isolé dans les comptes Tesla ; on le suit en KPI / mémo.
-5. **2026 est une année mixte** — H1 réel (Tesla 50,6 Md$, 838 k livraisons ; Starlink 12 M d'abonnés à fin juin) + H2 projeté.
+4. **Ne pas double-compter** — FSD déjà dans l'auto ; robots internes ≠ CA GAAP ; vols Starlink internes ≠ CA launch.
+5. **2026 est une année mixte** — H1 réel + H2 projeté. Le recalage n'invente pas Q3/Q4.
+6. **Le levier n°1 est réglementaire** — l'année d'entrée du Cybercab en flotte payante change 2027 beaucoup plus que 2030 (le backlog rattrape).
 
-### Ce que cette étape ne fait pas encore
+### Étape 2 ajoutée
 
-- Recalage automatique à chaque publication trimestrielle
-- Monte-Carlo / distributions d'incertitude
-- Capex et free cash flow complets (le capex Tesla 2026 est guidé à ~25 Md$)
-- Économie unitaire Optimus et compute orbital Starship au même niveau de détail que le Cybercab
+- Recalage YTD (pont H1 publié → FY)
+- Monte-Carlo (400 tirages, seed fixe) sur année d'entrée, utilisation, prix/mile, coût/mile, échelle de production
+- Capex (cœur + flotte + Optimus interne) et FCF, plancher 25 Md$ en 2026
+- Optimus unitaire (interne = économie de main-d'œuvre) et Starship unitaire (vol externe seulement)
+
+### Ce qui reste pour plus tard
+
+- Ingestion automatique des PDF Update decks
+- Capex / FCF SpaceX au même grain
+- Monte-Carlo sur Starlink ARPU et cadence Starship
         """
     )
     left, right = st.columns(2)
@@ -293,7 +312,6 @@ def render_dashboard(active: dict, all_sc: dict, compare: bool) -> None:
     spacex = active["spacex"]
     y2026 = tesla[tesla["year"] == 2026].iloc[0]
     y2030 = tesla[tesla["year"] == 2030].iloc[0]
-    y2035 = tesla[tesla["year"] == 2035].iloc[0]
     s2026 = spacex[spacex["year"] == 2026].iloc[0]
     s2030 = spacex[spacex["year"] == 2030].iloc[0]
 
@@ -307,7 +325,7 @@ def render_dashboard(active: dict, all_sc: dict, compare: bool) -> None:
     kpi_card(c5, "Flotte robotaxi 2030", fmt_int(y2030["robotaxi_fleet"]))
     kpi_card(c6, "ROI Cybercab 2030", fmt_pct(y2030["cab_roi"] or 0), "simple, Tesla-owned")
     kpi_card(c7, "Starlink abonnés 2030", fmt_num(s2030["starlink_subs_m"]) + " M")
-    kpi_card(c8, "Tesla CA 2035", fmt_md(y2035["revenue_total_b"]))
+    kpi_card(c8, "Tesla FCF 2026", fmt_md(y2026["fcf_b"]), "plancher capex 25 Md$")
 
     if compare:
         series = {}
@@ -422,6 +440,8 @@ def render_tesla(active: dict, all_sc: dict, compare: bool) -> None:
         "fsd_subs_m",
         "robotaxi_fleet",
         "optimus_units",
+        "fcf_b",
+        "capex_total_b",
     ]
     table = tesla[cols].copy()
     table.columns = [
@@ -430,7 +450,7 @@ def render_tesla(active: dict, all_sc: dict, compare: bool) -> None:
         "Auto",
         "Énergie",
         "Robotaxi",
-        "Optimus",
+        "Optimus GAAP",
         "Marge brute",
         "Marge op.",
         "EBITDA adj.",
@@ -439,6 +459,8 @@ def render_tesla(active: dict, all_sc: dict, compare: bool) -> None:
         "FSD M",
         "Flotte robotaxi",
         "Optimus unités",
+        "FCF",
+        "Capex",
     ]
     st.dataframe(
         table.style.format(
@@ -447,7 +469,7 @@ def render_tesla(active: dict, all_sc: dict, compare: bool) -> None:
                 "Auto": "{:.1f}",
                 "Énergie": "{:.1f}",
                 "Robotaxi": "{:.1f}",
-                "Optimus": "{:.1f}",
+                "Optimus GAAP": "{:.1f}",
                 "Marge brute": "{:.1%}",
                 "Marge op.": "{:.1%}",
                 "EBITDA adj.": "{:.1f}",
@@ -456,9 +478,24 @@ def render_tesla(active: dict, all_sc: dict, compare: bool) -> None:
                 "FSD M": "{:.2f}",
                 "Flotte robotaxi": "{:,.0f}",
                 "Optimus unités": "{:,.0f}",
+                "FCF": "{:.1f}",
+                "Capex": "{:.1f}",
             }
         ),
         hide_index=True,
+        use_container_width=True,
+    )
+    st.markdown("### Optimus — GAAP vs économique")
+    st.caption("Les robots internes (usine, Academy) ne sont pas du CA. Économie = heures × (salaire substitué − opex).")
+    st.plotly_chart(
+        line_chart(
+            "Optimus : CA GAAP vs économies internes",
+            {
+                "CA GAAP (vendus)": (tesla["year"], tesla["revenue_optimus_b"]),
+                "Économies internes": (tesla["year"], tesla["optimus_savings_b"]),
+            },
+            "Md$",
+        ),
         use_container_width=True,
     )
 
@@ -472,7 +509,7 @@ def render_cybercab(active: dict) -> None:
     st.markdown(
         """
 Le Cybercab n'est **pas encore** en flotte commerciale (juillet 2026 : essais salariés à Giga Texas).
-La production a démarré, capacité installée > 125 k, rampe initiale décrite comme très lente.
+Le scénario de base fait entrer les premiers exemplaires en **2027**. Un décalage à 2028-2029 casse 2027 ; 2030 rattrape via le backlog de production.
 Le ROI ci-dessous est celui d'un véhicule **détenu par Tesla**, hors effet de levier.
         """
     )
@@ -584,8 +621,8 @@ def render_spacex(active: dict, all_sc: dict, compare: bool) -> None:
     st.markdown(
         """
 Starlink est le seul centre de profit clairement identifiable (marge d'exploitation Connectivity 2025 ≈ 39 %).
-Le launch interne (Starlink) ne se voit pas en CA externe. Le segment IA (xAI consolidé en 2026)
-est le principal écart entre le scénario de base et l'objectif 1 000 Md$ de Musk.
+Les vols Starship internes (déploiement Starlink) **ne sont pas du CA**. Seuls Falcon externe, Starship externe, Dragon / Starshield / HLS comptent.
+Le segment IA (xAI consolidé en 2026) reste le principal écart vers l'objectif 1 000 Md$.
         """
     )
     st.plotly_chart(
@@ -622,6 +659,10 @@ est le principal écart entre le scénario de base et l'objectif 1 000 Md$ de Mu
             "starlink_arpu_month",
             "revenue_connectivity_b",
             "revenue_launch_b",
+            "revenue_falcon_b",
+            "revenue_starship_b",
+            "starship_flights",
+            "contrib_per_starship_m",
             "revenue_ai_b",
             "revenue_total_b",
             "operating_income_b",
@@ -634,6 +675,10 @@ est le principal écart entre le scénario de base et l'objectif 1 000 Md$ de Mu
         "ARPU $/mois",
         "Starlink",
         "Launch",
+        "Falcon ext.",
+        "Starship ext.",
+        "Vols Starship",
+        "Contrib. $/vol M",
         "IA",
         "CA",
         "EBIT",
@@ -646,6 +691,10 @@ est le principal écart entre le scénario de base et l'objectif 1 000 Md$ de Mu
                 "ARPU $/mois": "{:.0f}",
                 "Starlink": "{:.1f}",
                 "Launch": "{:.1f}",
+                "Falcon ext.": "{:.1f}",
+                "Starship ext.": "{:.1f}",
+                "Vols Starship": "{:,.0f}",
+                "Contrib. $/vol M": "{:.0f}",
                 "IA": "{:.1f}",
                 "CA": "{:.1f}",
                 "EBIT": "{:.1f}",
@@ -655,6 +704,183 @@ est le principal écart entre le scénario de base et l'objectif 1 000 Md$ de Mu
         hide_index=True,
         use_container_width=True,
     )
+    st.caption("Autorisation FAA Starbase : 25 vols/an. Au-delà, le modèle suppose d'autres sites — c'est une hypothèse, pas un fait.")
+
+
+def render_rebase(active: dict) -> None:
+    b = active["bridge"]
+    st.markdown("### Pont H1 publié → FY 2026 projeté")
+    st.caption(
+        f"Dernier trimestre publié : **{b['last_quarter']}** (au {b['as_of']}). "
+        f"Prochain print : **{b['next_print']}**. H2 n'est pas un fait — c'est l'implication du modèle."
+    )
+    c1, c2, c3, c4 = st.columns(4)
+    kpi_card(c1, "CA H1 réel", fmt_md(b["h1_revenue_b"]))
+    kpi_card(c2, "CA H2 implicite", fmt_md(b["h2_implied_revenue_b"]))
+    kpi_card(c3, "CA FY projeté", fmt_md(b["fy_revenue_b"]), f"{b['h1_share_of_fy_revenue']*100:.0f} % déjà fait")
+    kpi_card(c4, "FCF H2 implicite", fmt_md(b["h2_implied_fcf_b"]), "H1 FCF " + fmt_md(b["h1_fcf_b"]))
+
+    c5, c6, c7, c8 = st.columns(4)
+    kpi_card(c5, "Livraisons H1", fmt_int(b["h1_deliveries"]))
+    kpi_card(c6, "Livraisons H2 implicites", fmt_int(b["h2_implied_deliveries"]))
+    kpi_card(c7, "Capex H1 / FY", f"{fmt_md(b['h1_capex_b'])} / {fmt_md(b['fy_capex_b'])}")
+    kpi_card(c8, "Stockage H1", f"{fmt_num(b['h1_storage_gwh'])} GWh")
+
+    st.markdown("#### Trimestres Tesla déjà publiés")
+    qdf = pd.DataFrame(published_quarters())
+    st.dataframe(
+        qdf.rename(
+            columns={
+                "quarter": "Trimestre",
+                "revenue_b": "CA",
+                "deliveries": "Livraisons",
+                "storage_gwh": "GWh",
+                "ocf_b": "OCF",
+                "capex_b": "Capex",
+                "fcf_b": "FCF",
+                "source": "Source",
+            }
+        ),
+        hide_index=True,
+        use_container_width=True,
+    )
+    sx = spacex_ytd()
+    st.markdown("#### SpaceX YTD")
+    st.write(
+        f"Q2 2026 : Starlink {fmt_md(sx['q2_connectivity_b'])} · Launch {fmt_md(sx['q2_space_b'])} · "
+        f"IA {fmt_md(sx['q2_ai_b'])} · {fmt_num(sx['starlink_subs_m'])} M d'abonnés. {sx['note']}"
+    )
+    st.markdown("#### Checklist au prochain print (Q3)")
+    for item in b["checklist"]:
+        st.write(f"- {item}")
+    st.info("Pour recaler : mettre à jour `data/actuals.yaml` et `data/tesla_history.yaml`. Ne pas interpoler un trimestre non publié.")
+
+
+@st.cache_data(show_spinner=True)
+def run_mc(scenario: str, n: int, seed: int) -> dict:
+    summary = simulate(scenario, n=n, seed=seed)
+    return {
+        "n": summary.n,
+        "p10": summary.p10,
+        "p50": summary.p50,
+        "p90": summary.p90,
+        "start_year_counts": summary.start_year_counts,
+        "samples": summary.samples,
+    }
+
+
+def render_uncertainty(scenario: str) -> None:
+    st.markdown("### Monte-Carlo — leviers Cybercab")
+    st.caption(
+        "Tirages sur l'année d'entrée commerciale (2026 10 %, 2027 45 %, 2028 30 %, 2029 15 %), "
+        "l'utilisation, le prix/mile, le coût/mile et l'échelle de production. Seed fixe = reproductible."
+    )
+    n = st.slider("Nombre de simulations", 100, 500, 300, 50)
+    summary = run_mc(scenario, n, 42)
+    labels = [
+        ("robotaxi_ca_2027", "CA robotaxi 2027 (Md$)", True),
+        ("robotaxi_ca_2030", "CA robotaxi 2030 (Md$)", True),
+        ("fleet_2030", "Flotte 2030", False),
+        ("roi_2030", "ROI Cybercab 2030", True),
+        ("tesla_ca_2030", "CA Tesla 2030 (Md$)", True),
+        ("fcf_2030", "FCF Tesla 2030 (Md$)", True),
+    ]
+    cols = st.columns(3)
+    for i, (key, label, is_md) in enumerate(labels):
+        p10, p50, p90 = summary["p10"][key], summary["p50"][key], summary["p90"][key]
+        with cols[i % 3]:
+            if key == "roi_2030":
+                st.metric(label, fmt_pct(p50), f"P10 {fmt_pct(p10)} · P90 {fmt_pct(p90)}")
+            elif key == "fleet_2030":
+                st.metric(label, fmt_int(p50), f"P10 {fmt_int(p10)} · P90 {fmt_int(p90)}")
+            else:
+                st.metric(label, fmt_md(p50), f"P10 {fmt_md(p10)} · P90 {fmt_md(p90)}")
+
+    fig = go.Figure()
+    fig.add_trace(go.Histogram(x=summary["samples"]["robotaxi_ca_2030"], nbinsx=24, marker_color=TESLA, name="CA robotaxi 2030"))
+    fig.update_layout(title=f"Distribution CA robotaxi 2030 ({summary['n']} tirages)", xaxis_title="Md$", height=360, template="plotly_white")
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.markdown("#### Sensibilité : année d'entrée seule")
+    delay = pd.DataFrame(delay_sensitivity(scenario))
+    st.plotly_chart(
+        line_chart(
+            "CA robotaxi si on ne change que l'année d'entrée commerciale",
+            {
+                "2027": (delay["start_year"], delay["robotaxi_2027"]),
+                "2030": (delay["start_year"], delay["robotaxi_2030"]),
+            },
+            "Md$",
+        ),
+        use_container_width=True,
+    )
+    st.caption("2027 est très sensible à la régulation. 2030 l'est peu : le backlog de production rattrape.")
+    starts = summary["start_year_counts"]
+    st.write("Tirages par année d'entrée : " + ", ".join(f"{y} → {c}" for y, c in sorted(starts.items())))
+
+
+def render_cash(active: dict, all_sc: dict, compare: bool) -> None:
+    tesla = active["tesla"]
+    y26 = tesla[tesla["year"] == 2026].iloc[0]
+    y30 = tesla[tesla["year"] == 2030].iloc[0]
+    st.markdown("### Capex et free cash flow Tesla")
+    st.caption("FCF = OCF − capex. OCF ≈ EBITDA adj. × 0,92. Capex flotte cash à la **production**, pas au déploiement. Plancher 2026 = 25 Md$ (guidage).")
+    c1, c2, c3, c4 = st.columns(4)
+    kpi_card(c1, "Capex 2026", fmt_md(y26["capex_total_b"]))
+    kpi_card(c2, "FCF 2026", fmt_md(y26["fcf_b"]))
+    kpi_card(c3, "Capex 2030", fmt_md(y30["capex_total_b"]))
+    kpi_card(c4, "FCF 2030", fmt_md(y30["fcf_b"]))
+
+    st.plotly_chart(
+        stacked_bar(
+            "Capex Tesla",
+            tesla["year"].tolist(),
+            {
+                "Cœur (usines, AI, énergie)": tesla["capex_core_b"].tolist(),
+                "Flotte Cybercab": tesla["capex_fleet_b"].tolist(),
+                "Optimus interne": tesla["capex_optimus_b"].tolist(),
+            },
+            ["#111827", TESLA, "#f59e0b"],
+        ),
+        use_container_width=True,
+    )
+    if compare:
+        series = {
+            assumptions()["scenarios"][n]["label"]: (pack["tesla"]["year"], pack["tesla"]["fcf_b"])
+            for n, pack in all_sc.items()
+        }
+        st.plotly_chart(
+            line_chart("FCF Tesla", series, "Md$", {assumptions()["scenarios"][n]["label"]: SCENARIO_COLORS[n] for n in all_sc}),
+            use_container_width=True,
+        )
+    else:
+        st.plotly_chart(
+            line_chart(
+                "OCF vs capex vs FCF",
+                {
+                    "OCF": (tesla["year"], tesla["ocf_b"]),
+                    "Capex": (tesla["year"], tesla["capex_total_b"]),
+                    "FCF": (tesla["year"], tesla["fcf_b"]),
+                },
+                "Md$",
+            ),
+            use_container_width=True,
+        )
+    cash_tbl = tesla[["year", "adj_ebitda_b", "ocf_b", "capex_core_b", "capex_fleet_b", "capex_optimus_b", "capex_total_b", "fcf_b", "cash_eoy_b"]]
+    cash_tbl = cash_tbl.rename(
+        columns={
+            "year": "Année",
+            "adj_ebitda_b": "EBITDA adj.",
+            "ocf_b": "OCF",
+            "capex_core_b": "Capex cœur",
+            "capex_fleet_b": "Capex flotte",
+            "capex_optimus_b": "Capex Optimus",
+            "capex_total_b": "Capex",
+            "fcf_b": "FCF",
+            "cash_eoy_b": "Cash fin d'année",
+        }
+    )
+    st.dataframe(cash_tbl.style.format({c: "{:.1f}" for c in cash_tbl.columns if c != "Année"}), hide_index=True, use_container_width=True)
 
 
 def _goal_row(item: dict) -> None:

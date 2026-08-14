@@ -99,28 +99,39 @@ def project_cybercab(
     legacy_start: float,
     legacy_peak: float,
     legacy_peak_year: int,
-    first_year_commercial_share: float,
+    commercial_start_year: int,
+    start_year_deploy_share: float,
 ) -> list[UnitEconomics]:
     n = len(years)
     for series in (production, tesla_owned_share, utilization, price_per_mile, cost_per_mile):
         if len(series) != n:
             raise ValueError("toutes les séries Cybercab doivent avoir len(years)")
 
+    if not 0 <= start_year_deploy_share <= 1:
+        raise ValueError("start_year_deploy_share must be in [0, 1]")
+
     legacy = legacy_robotaxi_path(years, legacy_start, legacy_peak, legacy_peak_year)
     owned = 0.0
     network = 0.0
+    inventory = 0.0
     rows: list[UnitEconomics] = []
 
     for i, year in enumerate(years):
         produced = float(production[i])
         owned_share = float(tesla_owned_share[i])
-        new_owned = produced * owned_share
-        new_sold = produced * (1 - owned_share)
+        inventory += produced
 
-        # 2026 : production démarre, très peu entre en flotte commerciale.
-        if i == 0:
-            new_owned *= first_year_commercial_share
-            new_sold *= first_year_commercial_share
+        if year < commercial_start_year:
+            deployed = 0.0
+        elif year == commercial_start_year:
+            deployed = inventory * start_year_deploy_share
+            inventory -= deployed
+        else:
+            deployed = inventory
+            inventory = 0.0
+
+        new_owned = deployed * owned_share
+        new_sold = deployed * (1.0 - owned_share)
 
         owned = owned * (1 - retire_rate) + new_owned
         network = network * (1 - retire_rate) + new_sold
@@ -142,7 +153,7 @@ def project_cybercab(
         # Pour le réseau, Tesla encaisse le take rate ; le coût d'exploitation
         # est surtout chez le propriétaire. On ne retranche pas le cost/mile Tesla-side.
 
-        hw_rev = produced * (1.0 - owned_share) * hardware_asp / 1e9
+        hw_rev = new_sold * hardware_asp / 1e9
 
         rows.append(
             UnitEconomics(
