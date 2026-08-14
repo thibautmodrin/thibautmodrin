@@ -1,0 +1,74 @@
+# Valorisation : cours implicite = fondamentaux du modèle × multiples, avec dilution.
+# Ce n'est PAS un CAGR magique sur le prix, ni un conseil en investissement.
+# Spot = clôture 13 août 2026. Les chemins de multiples sont des hypothèses.
+
+as_of: "2026-08-13"
+
+# Pondération EV : on bascule progressivement du CA vers l'EBITDA
+# (en 2026 Tesla se trade encore beaucoup sur le récit ; en 2030 l'EBITDA robotaxi pèse).
+# Si EBITDA ≤ 0 → 100 % EV/S.
+w_ebitda_knots:
+  2026: 0.30
+  2030: 0.70
+  2035: 0.80
+
+tesla:
+  ticker: TSLA
+  spot_price: 339.98
+  shares_b: 3.949547394
+  market_cap_t: 1.343
+  enterprise_value_t: 1.323
+  net_cash_spot_b: 20.0
+  # Dette brute tenue constante ; cash net_t = cash_eoy_t − dette.
+  # Q2 2026 cash 43,5 Md$ − net cash spot ~20 Md$ ≈ 23,5 Md$ de dette.
+  gross_debt_b: 23.5
+  spot_ev_s: 12.7
+  spot_ev_ebitda: 86.0
+  note: >
+    Clôture 13 août 2026. ~3,95 Md d'actions ; capi ~1,34 T$ ; EV ~1,32 T$.
+    EV/S spot ~12,7 sur le CA 2026 du modèle ; EV/EBITDA adj. ~86 sur l'EBITDA 2026.
+    Les jalons CEO award 2,0 → 8,5 T$ impliquent ~506 $ puis ~2 000 $
+    (selon dilution).
+  scenarios:
+    conservateur:
+      dilution: 0.005
+      # Compression forte : le récit robotaxi ne se matérialise pas.
+      ev_s: [12.7, 10.0, 8.0, 6.2, 5.0, 4.5, 4.1, 3.8, 3.5, 3.3]
+      ev_ebitda: [86.0, 55.0, 38.0, 26.0, 18.0, 16.0, 14.0, 13.0, 12.0, 11.0]
+    base:
+      dilution: 0.008
+      # L'EBITDA monte, les multiples descendent. Le cours 2030 reste voisin du spot.
+      ev_s: [12.7, 11.2, 9.8, 8.6, 7.5, 6.8, 6.2, 5.7, 5.3, 5.0]
+      ev_ebitda: [86.0, 65.0, 48.0, 36.0, 28.0, 24.0, 21.0, 19.0, 17.0, 16.0]
+    objectifs:
+      dilution: 0.018
+      # Dilution plus haute (SBC + award CEO). Multiples plus riches tant que le plan tient.
+      ev_s: [12.7, 11.8, 10.6, 9.6, 9.0, 8.4, 7.8, 7.3, 6.8, 6.4]
+      ev_ebitda: [86.0, 70.0, 55.0, 44.0, 36.0, 32.0, 28.0, 25.0, 23.0, 21.0]
+
+spacex:
+  ticker: SPCX
+  spot_price: 141.29
+  shares_b: 13.18
+  market_cap_t: 1.862
+  net_cash_b: 60.0
+  spot_ev_s: 58.0
+  note: >
+    IPO 12-15 juin 2026 à 135 $, ~639 M Class A, ~86 Md$ levés.
+    Clôture 13 août 2026 ~141,29 $ ; ~13,18 Md d'actions toutes classes ;
+    capi ~1,86 T$ ; cash net ~60 Md$ (proceeds IPO, tenu constant faute de FCF SpaceX).
+    EV/S spot ~58× sur le CA 2026 du modèle — très riche, narratif IA.
+    SpaceX est valorisé surtout en EV/S : l'EBITDA est brouillé par xAI.
+  # Toujours 100 % EV/S (w_ebitda = 0).
+  w_ebitda: 0.0
+  scenarios:
+    conservateur:
+      dilution: 0.005
+      ev_s: [58.0, 40.0, 28.0, 20.0, 15.0, 13.0, 11.0, 10.0, 9.0, 8.0]
+    base:
+      dilution: 0.008
+      ev_s: [58.0, 45.0, 35.0, 26.0, 20.0, 17.0, 15.0, 13.5, 12.5, 12.0]
+    objectifs:
+      dilution: 0.010
+      # Le CA explose (IA) : le multiple comprime même dans le bull case.
+      ev_s: [58.0, 48.0, 36.0, 25.0, 18.0, 16.0, 14.0, 13.0, 12.0, 11.0]

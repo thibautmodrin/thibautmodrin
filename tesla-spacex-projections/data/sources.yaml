@@ -78,6 +78,27 @@ tesla:
     note: "2026 0,18 Md$ ; 2027 1,8 ; 2028 7,0 ; 2029 22,3 ; 2030 42,4. Large dispersion."
     used_for:
       - calage du scénario de base (ordre de grandeur, pas copie)
+  - id: tesla_spot_2026_08_13
+    type: fact
+    title: Cours Tesla (TSLA) clôture 13 août 2026
+    url: https://stockanalysis.com/stocks/tsla/
+    note: >
+      ~339,98 $ ; ~3,95 Md d'actions diluées ; capi ~1,34 T$ ; EV ~1,32 T$
+      (cash net ~20 Md$). EV/S ~12,7 et EV/EBITDA adj. ~86 sur le FY 2026 du modèle.
+    used_for:
+      - cours spot Tesla
+      - nombre d'actions
+      - ancrage des multiples 2026
+  - id: tesla_valuation_multiples
+    type: assumption
+    title: Chemins de multiples Tesla 2026-2035
+    note: >
+      Hypothèses de scénario, pas un consensus. En base, EV/S 12,7 → 7,5 (2030)
+      et EV/EBITDA 86 → 28. La compression des multiples est volontaire :
+      sans elle le cours 2030 dépasserait largement le spot alors que l'EBITDA
+      ne fait que ~3,5×.
+    used_for:
+      - cours implicite Tesla
 
 spacex:
   - id: spacex_s1_2026
@@ -114,3 +135,23 @@ spacex:
     url: https://sacra.com/c/spacex/
     used_for:
       - 2024 13,1 Md$ ; 2025 18,7 Md$ ; Space 4,1 Md$ en 2025
+  - id: spacex_spot_2026_08_13
+    type: fact
+    title: Cours SpaceX (SPCX) clôture 13 août 2026
+    note: >
+      IPO 12-15 juin 2026 à 135 $, ~639 M Class A, ~86 Md$ levés.
+      Clôture ~141,29 $ ; ~13,18 Md d'actions toutes classes ; capi ~1,86 T$ ;
+      cash net ~60 Md$ (proceeds). EV/S ~58× sur le CA 2026 du modèle.
+    used_for:
+      - cours spot SpaceX
+      - nombre d'actions
+      - ancrage EV/S 2026
+  - id: spacex_valuation_multiples
+    type: assumption
+    title: Chemin EV/S SpaceX 2026-2035
+    note: >
+      Valorisation surtout en EV/S (EBITDA brouillé par xAI). Spot 58× → 20×
+      en 2030 dans le scénario de base. Si le récit IA ne se matérialise pas,
+      le multiple s'écroule plus vite que le CA ne monte.
+    used_for:
+      - cours implicite SpaceX

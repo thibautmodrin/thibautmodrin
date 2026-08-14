@@ -14,11 +14,12 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from src.engine import history_spacex_frame, history_tesla_frame, project
-from src.kpis import spacex_kpis, tesla_kpis
-from src.load import assumptions, goals, sources
+from src.kpis import spacex_kpis, tesla_kpis, tesla_market_kpis
+from src.load import assumptions, goals, sources, valuation as load_valuation
 from src.montecarlo import delay_sensitivity, simulate
 from src.overrides import scale_to_anchor
 from src.rebase import published_quarters, spacex_ytd, tesla_2026_bridge
+from src.valuation import cagr as price_cagr, price_for_market_cap, valuation_frames
 
 st.set_page_config(
     page_title="Tesla × SpaceX — projections & jalons",
@@ -56,6 +57,14 @@ def fmt_num(value: float, digits: int = 1) -> str:
     return f"{value:,.{digits}f}".replace(",", " ").replace(".", ",")
 
 
+def fmt_usd(value: float, digits: int = 0) -> str:
+    return f"{value:,.{digits}f} $".replace(",", " ").replace(".", ",")
+
+
+def fmt_t(value: float, digits: int = 2) -> str:
+    return f"{value:,.{digits}f} T$".replace(",", " ").replace(".", ",")
+
+
 def apply_overrides(scenario: str, production_2030, price, cost, util, starlink_2030, start_year: int):
     cfg = assumptions()["scenarios"][scenario]
     cab = dict(cfg["cybercab"])
@@ -70,6 +79,32 @@ def apply_overrides(scenario: str, production_2030, price, cost, util, starlink_
         "commercial_start_year": int(start_year),
     }
     return overrides, scale_to_anchor(list(map(float, sx["starlink_subs_eoy_m"])), starlink_2030, i2030)
+
+
+def apply_valuation_overrides(scenario: str, tesla_ev_ebitda_2030: float, spacex_ev_s_2030: float):
+    cfg = load_valuation()
+    tesla_sc = cfg["tesla"]["scenarios"][scenario]
+    sx_sc = cfg["spacex"]["scenarios"][scenario]
+    i2030 = 4
+    tesla_eveb = scale_to_anchor(
+        list(map(float, tesla_sc["ev_ebitda"])), tesla_ev_ebitda_2030, i2030, floor=8.0, cap=90.0
+    )
+    spacex_evs = scale_to_anchor(list(map(float, sx_sc["ev_s"])), spacex_ev_s_2030, i2030, floor=4.0, cap=80.0)
+    return tesla_eveb, spacex_evs
+
+
+def attach_valuation(pack: dict, scenario: str, tesla_eveb=None, spacex_evs=None) -> dict:
+    tesla_val, spacex_val = valuation_frames(
+        pack["tesla"],
+        pack["spacex"],
+        scenario,
+        tesla_ev_ebitda_path=tesla_eveb,
+        spacex_ev_s_path=spacex_evs,
+    )
+    pack["tesla_val"] = tesla_val
+    pack["spacex_val"] = spacex_val
+    pack["mcap_kpis"] = [k.__dict__ for k in tesla_market_kpis(tesla_val)]
+    return pack
 
 
 def line_chart(title: str, series: dict[str, tuple[list, list]], ylabel: str, color_map: dict | None = None) -> go.Figure:
@@ -121,7 +156,7 @@ def kpi_card(col, label: str, value: str, delta: str | None = None):
 @st.cache_data(show_spinner=False)
 def run_scenario(name: str) -> dict:
     proj = project(name)
-    return {
+    pack = {
         "tesla": proj.tesla_frame(),
         "spacex": proj.spacex_frame(),
         "cybercab": proj.cybercab_frame(),
@@ -132,6 +167,7 @@ def run_scenario(name: str) -> dict:
         "spacex_kpis": [k.__dict__ for k in spacex_kpis(proj)],
         "bridge": tesla_2026_bridge(proj).__dict__,
     }
+    return attach_valuation(pack, name)
 
 
 def project_with_overrides(scenario: str, cab_overrides: dict, starlink_path: list[float] | None):
@@ -148,7 +184,7 @@ def project_with_overrides(scenario: str, cab_overrides: dict, starlink_path: li
             row.revenue_total_b = row.revenue_connectivity_b + row.revenue_launch_b + row.revenue_ai_b
             row.operating_income_b = row.oi_connectivity_b + row.oi_launch_b + row.oi_ai_b
             row.operating_margin = row.operating_income_b / row.revenue_total_b if row.revenue_total_b else 0
-    return {
+    pack = {
         "tesla": proj.tesla_frame(),
         "spacex": proj.spacex_frame(),
         "cybercab": proj.cybercab_frame(),
@@ -159,16 +195,18 @@ def project_with_overrides(scenario: str, cab_overrides: dict, starlink_path: li
         "spacex_kpis": [k.__dict__ for k in spacex_kpis(proj)],
         "bridge": tesla_2026_bridge(proj).__dict__,
     }
+    return pack
 
 
 def main() -> None:
     cfg = assumptions()
     scenarios = list(cfg["scenarios"].keys())
 
-    st.title("Tesla × SpaceX — CA, marges et jalons")
+    st.title("Tesla × SpaceX — CA, marges, jalons et cours")
     st.caption(
-        "Étape 2 · bottom-up 2026-2035 · recalage YTD · Monte-Carlo régulation/prix/utilisation · "
-        "capex/FCF · Optimus et Starship unitaires · données au 14 août 2026."
+        "Étape 3 · bottom-up 2026-2035 · cours implicite (fondamentaux × multiples) · "
+        "recalage YTD · Monte-Carlo · capex/FCF · données au 14 août 2026. "
+        "Ce n'est pas un conseil en investissement."
     )
 
     with st.sidebar:
@@ -198,16 +236,42 @@ def main() -> None:
         cost_2030 = st.slider("Coût / mile 2030 ($)", 0.15, 0.90, float(cab0["cost_per_mile"][4]), 0.01)
         util_2030 = st.slider("Utilisation payante 2030", 0.15, 0.70, float(cab0["utilization"][4]), 0.01)
         sl_2030 = st.slider("Abonnés Starlink 2030 (M)", 15.0, 150.0, float(sx0["starlink_subs_eoy_m"][4]), 1.0)
+        st.divider()
+        st.subheader("Valorisation (2030)")
+        st.caption("Le cours = EV (CA × EV/S et EBITDA × EV/EBITDA) + cash net, divisé par les actions diluées.")
+        val0 = load_valuation()
+        tesla_ev_eb_2030 = st.slider(
+            "Tesla EV/EBITDA 2030",
+            8.0,
+            50.0,
+            float(val0["tesla"]["scenarios"][scenario]["ev_ebitda"][4]),
+            1.0,
+            key=f"tsla_eveb_{scenario}",
+        )
+        spacex_evs_2030 = st.slider(
+            "SpaceX EV/S 2030",
+            5.0,
+            60.0,
+            float(val0["spacex"]["scenarios"][scenario]["ev_s"][4]),
+            1.0,
+            key=f"spcx_evs_{scenario}",
+        )
         compare = st.checkbox("Comparer les 3 scénarios (ignore les sliders)", value=True)
 
     cab_over, sl_path = apply_overrides(scenario, prod_2030, price_2030, cost_2030, util_2030, sl_2030, start_year)
+    tesla_eveb, spacex_evs = apply_valuation_overrides(scenario, tesla_ev_eb_2030, spacex_evs_2030)
     active = project_with_overrides(scenario, cab_over, sl_path)
+    if compare:
+        attach_valuation(active, scenario)
+    else:
+        attach_valuation(active, scenario, tesla_eveb, spacex_evs)
     all_sc = {name: run_scenario(name) for name in scenarios}
 
     tabs = st.tabs(
         [
             "Méthode",
             "Tableau de bord",
+            "Cours",
             "Recalage 2026",
             "Tesla",
             "Cybercab & ROI",
@@ -224,20 +288,22 @@ def main() -> None:
     with tabs[1]:
         render_dashboard(active, all_sc, compare)
     with tabs[2]:
-        render_rebase(active)
+        render_cours(active, all_sc, compare)
     with tabs[3]:
-        render_tesla(active, all_sc, compare)
+        render_rebase(active)
     with tabs[4]:
-        render_cybercab(active)
+        render_tesla(active, all_sc, compare)
     with tabs[5]:
-        render_uncertainty(scenario)
+        render_cybercab(active)
     with tabs[6]:
-        render_cash(active, all_sc, compare)
+        render_uncertainty(scenario)
     with tabs[7]:
-        render_spacex(active, all_sc, compare)
+        render_cash(active, all_sc, compare)
     with tabs[8]:
-        render_goals(active)
+        render_spacex(active, all_sc, compare)
     with tabs[9]:
+        render_goals(active)
+    with tabs[10]:
         render_sources()
 
 
@@ -266,11 +332,23 @@ ne font que déformer une S-curve déjà documentée.
 - Capex (cœur + flotte + Optimus interne) et FCF, plancher 25 Md$ en 2026
 - Optimus unitaire (interne = économie de main-d'œuvre) et Starship unitaire (vol externe seulement)
 
+### Étape 3 — cours de l'action
+
+Le cours n'est **pas** un CAGR magique. Pour chaque année :
+
+`EV = w × (EBITDA × EV/EBITDA) + (1 − w) × (CA × EV/S)`  
+`equity = EV + cash net` · `prix = equity / actions diluées`
+
+- Tesla : cash net = cash de fin d'année du modèle − dette brute (23,5 Md$, constante). Pondération `w` : 30 % EBITDA en 2026 → 70 % en 2030 → 80 % en 2035. Si l'EBITDA ≤ 0, 100 % EV/S.
+- SpaceX : 100 % EV/S (l'EBITDA est brouillé par xAI). Cash net tenu à 60 Md$ (pas de FCF SpaceX dans le modèle).
+- Dilution indicative : conservateur 0,5 %/an, base 0,8 %, objectifs 1,8 % (SBC + award CEO Tesla).
+- Les multiples **compressent** pendant que l'EBITDA monte : en scénario de base, le cours 2030 peut rester voisin du spot (~340 $). Un multiple figé (EV/EBITDA 50) donnerait beaucoup plus.
+
 ### Ce qui reste pour plus tard
 
 - Ingestion automatique des PDF Update decks
 - Capex / FCF SpaceX au même grain
-- Monte-Carlo sur Starlink ARPU et cadence Starship
+- Monte-Carlo sur Starlink ARPU, cadence Starship et multiples
         """
     )
     left, right = st.columns(2)
@@ -327,6 +405,19 @@ def render_dashboard(active: dict, all_sc: dict, compare: bool) -> None:
     kpi_card(c7, "Starlink abonnés 2030", fmt_num(s2030["starlink_subs_m"]) + " M")
     kpi_card(c8, "Tesla FCF 2026", fmt_md(y2026["fcf_b"]), "plancher capex 25 Md$")
 
+    tval = active["tesla_val"]
+    sval = active["spacex_val"]
+    tv30 = tval[tval["year"] == 2030].iloc[0]
+    sv30 = sval[sval["year"] == 2030].iloc[0]
+    spot_tsla = load_valuation()["tesla"]["spot_price"]
+    spot_spcx = load_valuation()["spacex"]["spot_price"]
+    tsla_cagr = price_cagr(spot_tsla, float(tv30["price"]), 4)
+    c9, c10, c11, c12 = st.columns(4)
+    kpi_card(c9, "Tesla cours 2030", fmt_usd(tv30["price"]), f"spot {fmt_usd(spot_tsla)}")
+    kpi_card(c10, "Tesla CAGR spot→2030", fmt_pct(tsla_cagr or 0), "implicite, pas un fait")
+    kpi_card(c11, "SpaceX cours 2030", fmt_usd(sv30["price"]), f"spot {fmt_usd(spot_spcx)}")
+    kpi_card(c12, "Tesla capi 2030", fmt_t(tv30["market_cap_t"]), "jalon CEO 2 T$")
+
     if compare:
         series = {}
         for name, pack in all_sc.items():
@@ -373,6 +464,220 @@ def render_dashboard(active: dict, all_sc: dict, compare: bool) -> None:
             ),
             use_container_width=True,
         )
+
+
+def render_cours(active: dict, all_sc: dict, compare: bool) -> None:
+    cfg = load_valuation()
+    tesla_spot = float(cfg["tesla"]["spot_price"])
+    spacex_spot = float(cfg["spacex"]["spot_price"])
+    tval = active["tesla_val"]
+    sval = active["spacex_val"]
+    t26 = tval[tval["year"] == 2026].iloc[0]
+    t30 = tval[tval["year"] == 2030].iloc[0]
+    t35 = tval[tval["year"] == 2035].iloc[0]
+    s26 = sval[sval["year"] == 2026].iloc[0]
+    s30 = sval[sval["year"] == 2030].iloc[0]
+    s35 = sval[sval["year"] == 2035].iloc[0]
+
+    st.warning(
+        "Ce n'est **pas un conseil en investissement**. Le cours implicite = "
+        "EV (fondamentaux du modèle × multiples hypothétiques) + cash net, "
+        "divisé par le nombre d'actions dilué. Un multiple figé ferait exploser le prix ; "
+        "la compression des multiples est le scénario central."
+    )
+    st.markdown(
+        """
+Le spot est la clôture du **13 août 2026**. La valorisation de fin 2026 utilise déjà le
+cash projeté (FCF Tesla négatif) : le cours implicite 2026 peut donc être un peu
+sous le spot. SpaceX se trade ~58× le CA 2026 — si le récit IA ne se matérialise
+pas, le multiple s'écroule plus vite que le CA ne monte.
+        """
+    )
+
+    cagr30 = price_cagr(tesla_spot, float(t30["price"]), 4)
+    cagr35 = price_cagr(tesla_spot, float(t35["price"]), 9)
+    p2t = price_for_market_cap(2.0, float(t30["shares_b"]))
+    p85t = price_for_market_cap(8.5, float(t30["shares_b"]))
+
+    c1, c2, c3, c4 = st.columns(4)
+    kpi_card(c1, "Tesla spot", fmt_usd(tesla_spot, 2), cfg["as_of"])
+    kpi_card(c2, "Tesla implicite 2026", fmt_usd(t26["price"]), f"capi {fmt_t(t26['market_cap_t'])}")
+    kpi_card(c3, "Tesla implicite 2030", fmt_usd(t30["price"]), fmt_pct(cagr30 or 0) + " CAGR")
+    kpi_card(c4, "Tesla implicite 2035", fmt_usd(t35["price"]), fmt_pct(cagr35 or 0) + " CAGR")
+
+    c5, c6, c7, c8 = st.columns(4)
+    kpi_card(c5, "Jalon 2 T$ / action 2030", fmt_usd(p2t), "CEO award")
+    kpi_card(c6, "Jalon 8,5 T$ / action 2030", fmt_usd(p85t), "CEO award")
+    kpi_card(c7, "SpaceX spot", fmt_usd(spacex_spot, 2), cfg["as_of"])
+    kpi_card(
+        c8,
+        "SpaceX implicite 2030",
+        fmt_usd(s30["price"]),
+        fmt_pct(price_cagr(spacex_spot, float(s30["price"]), 4) or 0) + " CAGR",
+    )
+
+    if compare:
+        series = {
+            assumptions()["scenarios"][n]["label"]: (pack["tesla_val"]["year"], pack["tesla_val"]["price"])
+            for n, pack in all_sc.items()
+        }
+        fig = line_chart(
+            "Tesla — cours implicite vs spot",
+            series,
+            "$ / action",
+            {assumptions()["scenarios"][n]["label"]: SCENARIO_COLORS[n] for n in all_sc},
+        )
+        fig.add_hline(y=tesla_spot, line_dash="dot", line_color="#0f172a", annotation_text=f"Spot {tesla_spot:.0f} $")
+        fig.add_hline(y=p2t, line_dash="dash", line_color="#9f1239", annotation_text="2 T$ (actions 2030)")
+        st.plotly_chart(fig, use_container_width=True)
+
+        series = {
+            assumptions()["scenarios"][n]["label"]: (pack["spacex_val"]["year"], pack["spacex_val"]["price"])
+            for n, pack in all_sc.items()
+        }
+        fig = line_chart(
+            "SpaceX — cours implicite vs spot",
+            series,
+            "$ / action",
+            {assumptions()["scenarios"][n]["label"]: SCENARIO_COLORS[n] for n in all_sc},
+        )
+        fig.add_hline(y=spacex_spot, line_dash="dot", line_color="#0f172a", annotation_text=f"Spot {spacex_spot:.0f} $")
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        fig = line_chart(
+            "Tesla — cours implicite (scénario actif)",
+            {
+                "Cours implicite": (tval["year"], tval["price"]),
+                "Prix pour 2 T$": (tval["year"], [price_for_market_cap(2.0, s) for s in tval["shares_b"]]),
+                "Prix pour 8,5 T$": (tval["year"], [price_for_market_cap(8.5, s) for s in tval["shares_b"]]),
+            },
+            "$ / action",
+            {"Cours implicite": TESLA, "Prix pour 2 T$": "#9f1239", "Prix pour 8,5 T$": "#f59e0b"},
+        )
+        fig.add_hline(y=tesla_spot, line_dash="dot", line_color="#0f172a", annotation_text="Spot")
+        st.plotly_chart(fig, use_container_width=True)
+        fig = line_chart(
+            "SpaceX — cours implicite (scénario actif)",
+            {"Cours implicite": (sval["year"], sval["price"])},
+            "$ / action",
+            {"Cours implicite": SPACEX},
+        )
+        fig.add_hline(y=spacex_spot, line_dash="dot", line_color="#0f172a", annotation_text="Spot")
+        st.plotly_chart(fig, use_container_width=True)
+
+    left, right = st.columns(2)
+    with left:
+        st.markdown("#### Tesla — briques")
+        st.caption(cfg["tesla"]["note"].strip())
+        show = tval[
+            [
+                "year",
+                "revenue_b",
+                "ebitda_b",
+                "ev_s",
+                "ev_ebitda",
+                "w_ebitda",
+                "ev_b",
+                "net_cash_b",
+                "equity_b",
+                "shares_b",
+                "price",
+                "market_cap_t",
+            ]
+        ].copy()
+        show.columns = [
+            "Année",
+            "CA",
+            "EBITDA",
+            "EV/S",
+            "EV/EBITDA",
+            "w EBITDA",
+            "EV",
+            "Cash net",
+            "Equity",
+            "Actions Md",
+            "Cours $",
+            "Capi T$",
+        ]
+        st.dataframe(
+            show.style.format(
+                {
+                    "CA": "{:.1f}",
+                    "EBITDA": "{:.1f}",
+                    "EV/S": "{:.1f}",
+                    "EV/EBITDA": "{:.0f}",
+                    "w EBITDA": "{:.0%}",
+                    "EV": "{:.0f}",
+                    "Cash net": "{:.1f}",
+                    "Equity": "{:.0f}",
+                    "Actions Md": "{:.2f}",
+                    "Cours $": "{:.0f}",
+                    "Capi T$": "{:.2f}",
+                }
+            ),
+            hide_index=True,
+            use_container_width=True,
+        )
+    with right:
+        st.markdown("#### SpaceX — briques")
+        st.caption(cfg["spacex"]["note"].strip())
+        show = sval[
+            [
+                "year",
+                "revenue_b",
+                "ev_s",
+                "ev_b",
+                "net_cash_b",
+                "equity_b",
+                "shares_b",
+                "price",
+                "market_cap_t",
+            ]
+        ].copy()
+        show.columns = [
+            "Année",
+            "CA",
+            "EV/S",
+            "EV",
+            "Cash net",
+            "Equity",
+            "Actions Md",
+            "Cours $",
+            "Capi T$",
+        ]
+        st.dataframe(
+            show.style.format(
+                {
+                    "CA": "{:.1f}",
+                    "EV/S": "{:.1f}",
+                    "EV": "{:.0f}",
+                    "Cash net": "{:.1f}",
+                    "Equity": "{:.0f}",
+                    "Actions Md": "{:.2f}",
+                    "Cours $": "{:.0f}",
+                    "Capi T$": "{:.2f}",
+                }
+            ),
+            hide_index=True,
+            use_container_width=True,
+        )
+
+    st.markdown("#### Formule")
+    st.code(
+        "EV = w × (EBITDA × EV/EBITDA) + (1 − w) × (CA × EV/S)   # w=0 si EBITDA ≤ 0\n"
+        "Tesla cash_net_t = cash_eoy_t − 23,5 Md$ de dette brute (constante)\n"
+        "SpaceX cash_net = 60 Md$ (constant, pas de FCF dans le modèle)\n"
+        "equity = EV + cash_net\n"
+        "actions_t = actions_0 × (1 + dilution)^(année − 2026)\n"
+        "cours = equity / actions",
+        language="text",
+    )
+    st.caption(
+        f"Tesla 2026 EOY : {fmt_usd(t26['price'])} · 2030 : {fmt_usd(t30['price'])} · "
+        f"2035 : {fmt_usd(t35['price'])}. "
+        f"SpaceX 2026 : {fmt_usd(s26['price'])} · 2030 : {fmt_usd(s30['price'])} · "
+        f"2035 : {fmt_usd(s35['price'])}."
+    )
 
 
 def render_tesla(active: dict, all_sc: dict, compare: bool) -> None:
@@ -893,6 +1198,9 @@ def _goal_row(item: dict) -> None:
     st.markdown(f"**{item['label']}** · confiance {item['confidence']}")
     if item["unit"] == "usd_b":
         current_s, target_s = fmt_md(item["current"]), fmt_md(item["target"])
+    elif item["unit"] == "usd_t":
+        current_s = f"{item['current']:.2f} T$".replace(".", ",")
+        target_s = f"{item['target']:.1f} T$".replace(".", ",")
     else:
         current_s, target_s = fmt_int(item["current"]), fmt_int(item["target"])
     st.progress(min(max(progress, 0.0), 1.0), text=f"{current_s} / {target_s} · {delta}")
@@ -917,6 +1225,11 @@ def render_goals(active: dict) -> None:
 
     st.markdown("### SpaceX")
     for item in active["spacex_kpis"]:
+        _goal_row(item)
+
+    st.markdown("### Capitalisation Tesla (cours implicite)")
+    st.caption("Les jalons 2 T$ → 8,5 T$ du CEO award. Atteints seulement si fondamentaux × multiples le permettent.")
+    for item in active.get("mcap_kpis", []):
         _goal_row(item)
 
     g = goals()

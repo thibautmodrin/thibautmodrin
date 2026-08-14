@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from src.engine import Projection
-from src.load import goals, tesla_history
+from src.load import goals, tesla_history, valuation as load_valuation
 
 
 @dataclass
@@ -102,6 +102,38 @@ def tesla_kpis(proj: Projection) -> list[KpiStatus]:
                 projected_value=value,
                 confidence="medium",
                 definition="Adjusted EBITDA Tesla, défini dans les Update decks.",
+            )
+        )
+    return out
+
+
+def tesla_market_kpis(rows) -> list[KpiStatus]:
+    """Jalons de capitalisation du CEO award, évalués sur le cours implicite."""
+    if hasattr(rows, "itertuples"):
+        path = [(int(r.year), float(r.market_cap_t)) for r in rows.itertuples()]
+    else:
+        path = [(r.year, r.market_cap_t) for r in rows]
+    current = float(load_valuation()["tesla"]["market_cap_t"])
+    out: list[KpiStatus] = []
+    for target in (2.0, 8.5):
+        year, value = _year_hit(path, target)
+        out.append(
+            KpiStatus(
+                id=f"mcap_{target:g}t",
+                company="Tesla",
+                label=f"Capitalisation {target:g} T$",
+                current=current,
+                target=target,
+                unit="usd_t",
+                progress=min(current / target, 1.0),
+                projected_year=year,
+                projected_value=value,
+                confidence="low",
+                definition=(
+                    "Jalon de market cap du CEO award 2025. "
+                    "Le cours implicite = EV (CA × EV/S et EBITDA × EV/EBITDA) + cash net, "
+                    "divisé par les actions diluées. Les multiples sont des hypothèses."
+                ),
             )
         )
     return out
