@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+---
+
+# Invariants non négociables
+
+Contrat complet : `AGENTS.md`. Périmètre de compétences : `@10-perimetre-competences`.
+
+1. **Proposer avant d'agir.** Sur toute tâche non triviale, tu produis un plan (objectif, constat,
+   étapes, périmètre, coût, alternative écartée, vérification, retour arrière) et tu attends un
+   accord. Un accord porte sur le plan présenté, pas sur son extension.
+
+2. **Rester explicable.** Rien n'entre dans le dépôt que le propriétaire ne puisse défendre à
+   l'oral en deux minutes. Une solution plus sophistiquée mais opaque est une régression.
+
+3. **Situer le périmètre.** Chaque brique proposée est étiquetée `[acquis]`, `[à apprendre]` ou
+   `[hors périmètre]`. Une brique `[hors périmètre]` ne s'implémente pas sans accord explicite et
+   séparé ; tu proposes systématiquement l'option qui reste dans le périmètre.
+
+4. **Ne rien élargir en silence.** Pas de nouvelle dépendance, pas de nouvel outil, pas de
+   changement d'infrastructure (`Dockerfile`, `docker-compose.yml`, CI, `Makefile`), pas de
+   migration de schéma, pas d'écriture dans `data/**` ou `artifacts/**`, pas de réécriture
+   d'historique git — sans validation préalable.
+
+5. **Ne rien retirer sans le dire.** Fonctionnalité existante, test, validation de données, seuil
+   métier, disclaimer : si ton changement en supprime un, tu t'arrêtes et tu le signales.
+
+6. **Dire ce que tu n'as pas vérifié.** Tu montres la commande et sa sortie, ou tu annonces que
+   tu n'as pas pu tester. Jamais « ça devrait fonctionner ».
+
+Français pour les réponses, commits et documentation ; anglais pour les identifiants du code.

@@ -1,0 +1,57 @@
+---
+description: Règles pour les pipelines de données, DAGs Airflow, SQL et validation de données
+globs: **/dags/**,**/*.sql,**/prepare_data.py,**/ingest.py,**/etl/**,**/pipelines/**,**/gx/**,**/analytics/**
+---
+
+# Données et pipelines
+
+## Principe de base
+
+Un pipeline est **rejouable sans surprise** : même entrée, même sortie, et on peut le relancer
+après un échec sans corrompre l'état. Chaque étape écrit dans son propre répertoire de sortie et ne
+modifie jamais la donnée brute en place.
+
+- **`data/raw/` est en lecture seule.** Aucun script n'écrit dedans. Les sorties vont dans
+  `data/processed/`, `data/interim/` ou `artifacts/`, et sont ignorées par git.
+- **Chaque étape est idempotente** : la relancer deux fois donne le même résultat, sans doublon.
+- **Les volumes se contrôlent** : après chaque étape, on connaît le nombre de lignes attendu et on
+  s'en écarte bruyamment (log, exception, échec de validation) plutôt que silencieusement.
+
+## Qualité et contrats
+
+- **Valider en entrée plutôt que déboguer en sortie** : colonnes attendues, types, plages,
+  taux de valeurs manquantes, unicité des clés. Great Expectations quand le projet l'utilise déjà,
+  sinon des assertions explicites — pas de troisième outil sans validation.
+- **Un échec de validation arrête le pipeline.** On ne poursuit pas sur des données douteuses en
+  se contentant d'un avertissement.
+- **La signification des colonnes est documentée** là où le lecteur la cherchera : au plus près du
+  code de préparation, pas dans un notebook exploratoire.
+
+## SQL
+
+- **Requêtes lisibles et explicites** : colonnes nommées, jamais de `SELECT *` dans du code de
+  production ; jointures qualifiées ; CTE plutôt que sous-requêtes imbriquées.
+- **Paramètres liés**, jamais de construction de requête par concaténation de chaînes.
+- **Toute écriture est bornée** : `UPDATE` et `DELETE` sans `WHERE` sont interdits.
+- **`DROP`, `TRUNCATE`, migration destructive** : proposition seulement, exécution jamais sans
+  accord explicite, et un moyen de revenir en arrière décrit avant.
+- **Le coût est anticipé** sur les tables volumineuses : index utilisés, filtrage avant jointure.
+
+## Airflow
+
+- **Le DAG orchestre, il ne calcule pas.** La logique vit dans `src/`, importable et testable hors
+  Airflow ; la tâche appelle une fonction.
+- **Tâches atomiques et réexécutables**, avec des dépendances explicites. Pas d'état implicite
+  transmis par le système de fichiers local entre deux workers.
+- **Pas de code lourd au niveau module** (chargement de modèle, requête, lecture de fichier) : le
+  scheduler parse le DAG en boucle.
+- **Retries, timeout et fenêtre de planification définis** ; pas de `catchup` activé par
+  inadvertance sur un historique long.
+- **Aucun secret dans le DAG** : connexions et variables Airflow, ou variables d'environnement.
+- **`airflow db reset`, purge de métadonnées, effacement de `dag_run`** : jamais sans accord.
+
+## Écritures sensibles
+
+Ne modifie jamais sans validation explicite : contenu de `data/**` et `artifacts/**`, schéma de
+base, migration, table de production, index vectoriel déjà construit. Proposer la commande à
+exécuter est toujours préférable à l'exécuter.

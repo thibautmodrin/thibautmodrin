@@ -1,0 +1,65 @@
+---
+description: Règles pour Docker, CI GitHub Actions, MLflow, services FastAPI/Streamlit et mise en production
+globs: **/Dockerfile*,**/docker-compose*.yml,**/.github/workflows/*.yml,**/Makefile,**/configs/**,**/app.py,**/main.py,**/api/**,**/train.py,**/mlflow*,**/*.env.example
+---
+
+# Industrialisation et MLOps
+
+## Reproductibilité
+
+- **Un projet se démarre en une commande documentée** et se vérifie sur un point de santé. Si une
+  contribution casse le `make demo` / `docker compose up` du dépôt, elle est incomplète.
+- **Les versions sont pinnées** dans `requirements.txt` / `pyproject.toml`. Une montée de version
+  est un changement à part entière, jamais un effet de bord.
+- **Toute variable d'environnement introduite apparaît dans `.env.example`**, avec une valeur
+  factice et un commentaire. Jamais une valeur réelle.
+
+## Docker
+
+- **Image minimale** : image de base slim, dépendances installées avant la copie du code pour
+  profiter du cache, pas de secret dans une couche, `.dockerignore` à jour.
+- **Le conteneur ne réentraîne pas au démarrage** sauf intention explicite du projet ; il charge
+  des artefacts déjà produits.
+- **Un point de santé existe** et est utilisé par le `healthcheck` de compose quand il y en a un.
+- **Les volumes ne montent pas de données sensibles** sans que ce soit dit.
+- **`docker compose down -v`, `docker system prune`, `docker push`** : jamais sans accord — le
+  premier détruit les volumes de données locales.
+
+## CI (GitHub Actions)
+
+- **La CI reste rapide et compréhensible** : installation, lint, tests. Pas de matrice
+  multi-versions sans besoin, pas d'étape qui appelle un service payant.
+- **Aucun secret en clair** ; uniquement via `secrets.*`, et jamais imprimé dans un log.
+- **La CI ne déploie rien** et ne pousse aucune image tant que ce n'est pas explicitement demandé.
+- **Un workflow qui échoue se corrige à la source**, pas en désactivant l'étape ou en ajoutant
+  `continue-on-error`.
+
+## MLflow et cycle de vie du modèle
+
+- **Chaque entraînement trace** : paramètres, métriques, version des données ou empreinte du jeu
+  utilisé, seuil retenu, et l'artefact du modèle.
+- **Les métriques loguées sont celles qui décident** (recall, PR-AUC, taux d'alerte), avec le seuil
+  associé — une métrique sans son seuil n'est pas interprétable.
+- **Le modèle exposé par le service est identifiable** : version, date, empreinte. Un service qui
+  charge « le dernier fichier trouvé » est un défaut à signaler.
+- **La procédure de retour arrière est décrite avant la mise en service**, pas après l'incident.
+- **Promotion, suppression de run, purge d'artefacts, réentraînement** : proposition uniquement.
+
+## Services FastAPI / Streamlit
+
+- **Le contrat d'entrée est validé** (schéma pydantic) et l'erreur retournée est explicite : ni
+  trace complète exposée, ni `500` muet.
+- **Le modèle se charge une fois au démarrage**, pas à chaque requête.
+- **Modifier un schéma de requête ou de réponse est un changement de contrat** : il se signale
+  comme tel, avec les appelants impactés.
+- **Les logs ne contiennent pas de données personnelles** ni de payload complet non filtré.
+- **Le cadre d'usage reste visible** dans l'interface et la documentation quand le projet en a un
+  (aide à la décision, humain dans la boucle, absence de valeur réglementaire). Ne jamais retirer
+  ce type de mention pour « alléger ».
+
+## Monitoring et dérive
+
+- **Ce qui est surveillé est ce qui décide** : distribution des entrées, volume d'alertes, taux
+  d'erreur, latence. Un tableau de bord qui n'a pas de seuil d'action ne sert à rien.
+- **Le réentraînement est déclenché par une condition écrite** (dérive mesurée, fenêtre de temps),
+  pas par une intuition, et son résultat est comparé au modèle en place avant remplacement.

@@ -1,0 +1,54 @@
+---
+description: Conventions Python attendues dans les projets data / ML (lisibilité, testabilité, absence de sur-abstraction)
+globs: **/*.py
+---
+
+# Python — lisible d'abord, testable ensuite
+
+## Structure
+
+- **Fonctions courtes à responsabilité unique**, appelables depuis un test sans monter tout
+  l'environnement. Un module `train.py` expose des étapes distinctes ; il n'enchaîne pas 200 lignes
+  dans un `if __name__ == "__main__"`.
+- **Chemins, cibles et listes de features dans un `config.py` ou un fichier de configuration**,
+  jamais en dur au milieu du traitement.
+- **Pas de classe là où une fonction suffit.** Pas d'héritage, de métaclasse, de registre de
+  plugins ou de *factory* générique sans besoin démontré aujourd'hui.
+- **`pathlib`** plutôt que la concaténation de chaînes pour les chemins.
+- **Type hints sur les signatures publiques**, docstring courte quand le nom ne suffit pas. Pas de
+  docstring qui paraphrase la signature.
+
+## Données et ML
+
+- **Toute transformation apprise passe par un `Pipeline` scikit-learn** (imputation, encodage,
+  mise à l'échelle). Ajuster un `scaler` avant le découpage train/test est un défaut bloquant.
+- **Le découpage respecte la structure du problème** : temporel quand il y a un temps, groupé
+  quand il y a des groupes. Un `train_test_split` aléatoire sur des données temporelles se signale.
+- **Les seuils de décision sont explicites et calibrés**, jamais `0.5` par défaut sans discussion.
+  Le seuil retenu, son critère et le taux d'alerte associé sont tracés dans les artefacts.
+- **Les métriques correspondent au coût d'erreur métier.** Sur un événement rare, l'accuracy est
+  hors sujet ; recall et PR-AUC servent d'appui.
+- **Aléa maîtrisé** : `random_state` fixé partout où il existe.
+
+## Robustesse et secrets
+
+- **Les secrets viennent de l'environnement** (`os.environ`, `pydantic-settings`), jamais d'une
+  valeur en dur ni d'une valeur réelle dans `.env.example`.
+- **Pas de `except` nu ni de `except Exception: pass`.** On attrape ce qu'on sait traiter, et on
+  laisse remonter le reste avec un message utile.
+- **`logging` plutôt que `print`** dans le code applicatif ; `print` reste acceptable dans un
+  script one-shot assumé.
+- **Pas d'appel réseau au moment de l'import** d'un module.
+
+## Tests
+
+- **Un test par comportement**, nommé d'après ce qu'il vérifie. Pas de test qui réaffirme
+  l'implémentation ligne à ligne.
+- **Ce qui compte en priorité** : la forme et le contrat des données en sortie, les cas limites
+  (valeur manquante, classe absente, entrée vide), l'absence de leakage, la stabilité du seuil.
+- **Pas d'accès réseau ni de données réelles dans les tests** : petit jeu synthétique en fixture.
+
+## Interdits sans validation
+
+Nouvelle dépendance, changement de version pinnée, réécriture complète d'un module existant,
+reformatage d'un fichier entier alors que la demande est locale.

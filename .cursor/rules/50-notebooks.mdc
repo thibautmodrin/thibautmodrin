@@ -1,0 +1,26 @@
+---
+description: Règles pour les notebooks Jupyter — exploration jetable, code durable dans src/
+globs: **/*.ipynb
+---
+
+# Notebooks
+
+Un notebook sert à **explorer et à démontrer**, pas à héberger la logique du projet.
+
+- **Le code réutilisé vit dans `src/`** et est importé par le notebook. Dès qu'une cellule est
+  copiée une deuxième fois, elle devient une fonction dans un module.
+- **Le notebook se relit de haut en bas** et s'exécute dans l'ordre après un redémarrage du noyau.
+  Un notebook dont l'ordre d'exécution est faux n'est pas livrable.
+- **Une intention par notebook**, annoncée en première cellule markdown : question posée, données
+  utilisées, conclusion. On ne juxtapose pas EDA, entraînement et démo.
+- **Chaque graphique répond à une question** et porte un titre lisible. Sortie visuelle sans
+  commentaire d'interprétation : à commenter, ou à supprimer.
+- **Pas de secret, pas de chemin absolu de la machine locale, pas de donnée personnelle** dans une
+  cellule ou dans une sortie.
+- **Les sorties volumineuses sont nettoyées** avant commit (tableaux de milliers de lignes, images
+  lourdes) : elles polluent les diffs.
+- **Les conclusions remontent dans le README ou la documentation** du projet. Un arbitrage qui
+  n'existe que dans un notebook sera introuvable le jour de la soutenance.
+
+Quand tu modifies un notebook : touche uniquement les cellules concernées, n'en réordonne pas
+l'ensemble, et ne supprime pas une cellule d'analyse existante pour gagner de la place.

@@ -1,0 +1,75 @@
+---
+alwaysApply: true
+---
+
+# Périmètre de compétences — data engineering / MLOps
+
+Référentiel **tenu à jour par Thibaut**. Il décrit ce qui peut être proposé directement, ce qui
+demande un temps d'apprentissage, et ce qui ne s'introduit pas sans décision explicite.
+
+`[hors périmètre]` ne veut pas dire « incapable » : ça veut dire *pas dans ce projet sans
+arbitrage assumé*, parce qu'il faudrait pouvoir l'exploiter, le déboguer et le défendre seul.
+
+## `[acquis]` — proposable directement
+
+**Langage et données** — Python 3.11+, pandas, numpy, SQL, PostgreSQL, CSV/Parquet, `venv` + pip,
+`pyproject.toml`, `Makefile`.
+
+**Modélisation** — scikit-learn (`Pipeline`, `ColumnTransformer`, `class_weight`), XGBoost,
+Random Forest, régression logistique, `joblib`. Classes très déséquilibrées : recall, precision,
+PR-AUC, calibration de seuil métier, taux d'alerte, refus de l'accuracy comme métrique. Prévention
+du *data leakage*, notamment temporel.
+
+**MLOps** — MLflow (tracking, comparaison de runs, artefacts), monitoring de dérive et
+réentraînement conditionnel, versioning de modèle et procédure de rollback, Airflow (DAGs,
+scheduling), Great Expectations (validation de données), pytest, GitHub Actions.
+
+**Mise à disposition** — FastAPI (`/health`, `/predict`, `/docs`), Streamlit, Docker, docker
+compose, variables d'environnement via `.env` + `.env.example`.
+
+**GenAI** — RAG : découpage, embeddings, Chroma, API Mistral, réponses sourcées, garde-fous
+anti-hallucination.
+
+**Méthode** — cadrage métier avant technique, gel de périmètre écrit, documentation orientée
+soutenance, limites et risques assumés explicitement.
+
+## `[à apprendre]` — proposable avec le mode d'emploi
+
+Adjacent au périmètre : proposable si le gain est réel sur *ce* projet, à condition de joindre
+l'usage en une phrase, le concept minimal à comprendre, et l'angle qu'un jury creuserait.
+
+Cloud AWS de base (S3, ECR, ECS/Fargate, Lambda, IAM minimal) · Terraform en usage simple ·
+`ruff` / `black` / `pre-commit` · `mypy` progressif · `pydantic-settings` · logs structurés ·
+Alembic et migrations · Docker multi-stage et `healthcheck` · MLflow Model Registry (stages,
+alias) · Evidently pour outiller la dérive · DVC ou versioning de données · Optuna · exposition
+`/metrics` et tableau de bord simple · tests de contrat sur les données.
+
+## `[hors périmètre]` — ne pas introduire sans accord explicite
+
+Kubernetes, Helm, ArgoCD, KubernetesExecutor · Kubeflow, KServe, Seldon, BentoML · SageMaker
+Pipelines, Vertex AI, Azure ML · Spark, Databricks, Flink · Kafka et architectures streaming ·
+dbt, Snowflake, BigQuery, Redshift · Dagster, Prefect (Airflow est déjà l'orchestrateur maison) ·
+Feast et feature stores · Ray · Terraform multi-comptes et modules complexes · service mesh ·
+LangChain / LlamaIndex à grande échelle, LangServe, re-ranking LLM, fine-tuning, vLLM ·
+outillage monorepo (Bazel, Nx).
+
+Si l'un de ces éléments semble nécessaire : dis-le, chiffre le gain sur ce projet précis, donne le
+coût d'entrée, et **propose l'équivalent qui reste dans le périmètre**. Neuf fois sur dix, l'option
+simple documentée honnêtement est le bon livrable.
+
+## Doctrine d'arbitrage par défaut
+
+À qualité de résultat comparable, choisis systématiquement :
+
+- **pandas + SQL** tant que le volume tient sur une machine — pas de moteur distribué par principe.
+- **Un `Pipeline` scikit-learn** plutôt qu'une couche de features externalisée.
+- **Airflow ou un `Makefile`** plutôt qu'un orchestrateur supplémentaire.
+- **docker compose** plutôt qu'un orchestrateur de conteneurs.
+- **Un modèle simple bien seuillé** plutôt qu'un boosting mal cadré : le seuil métier apporte
+  généralement plus que le changement d'algorithme.
+- **Un fichier de configuration lisible** plutôt qu'une abstraction générique paramétrable.
+- **Une fonction testée** plutôt qu'une classe abstraite prévoyant des besoins hypothétiques.
+- **Écrire la limite dans le README** plutôt que d'ajouter une brique pour la masquer.
+
+Un projet de certification se juge sur la justesse du cadrage et la solidité de la démonstration,
+pas sur le nombre d'outils.
