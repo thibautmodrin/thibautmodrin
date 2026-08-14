@@ -1,0 +1,57 @@
+# Flux publics. X est optionnel (jeton Bearer) : voir src/x_client.py.
+user_agent: "TeslaSpaceXBriefing/1.0 (+https://github.com/thibautmodrin/thibautmodrin)"
+timeout_seconds: 20
+retention_days: 30
+
+rss:
+  - id: gnews_tesla_en
+    company: tesla
+    name: Google News Tesla
+    url: "https://news.google.com/rss/search?q=Tesla+when:1d&hl=en-US&gl=US&ceid=US:en"
+
+  - id: gnews_spacex_en
+    company: spacex
+    name: Google News SpaceX
+    url: "https://news.google.com/rss/search?q=SpaceX+when:1d&hl=en-US&gl=US&ceid=US:en"
+
+  - id: gnews_tesla_fr
+    company: tesla
+    name: Google News Tesla FR
+    url: "https://news.google.com/rss/search?q=Tesla+when:1d&hl=fr&gl=FR&ceid=FR:fr"
+
+  - id: gnews_voices
+    company: both
+    name: Google News voix Tesla
+    url: "https://news.google.com/rss/search?q=%22Elon+Musk%22+(Tesla+OR+SpaceX)+when:1d&hl=en-US&gl=US&ceid=US:en"
+
+  - id: electrek
+    company: tesla
+    name: Electrek
+    url: "https://electrek.co/feed/"
+
+  - id: teslarati
+    company: tesla
+    name: Teslarati
+    url: "https://www.teslarati.com/feed/"
+
+  - id: spacenews
+    company: spacex
+    name: SpaceNews
+    url: "https://spacenews.com/feed/"
+
+backfill_rss:
+  - id: gnews_tesla_7d
+    company: tesla
+    name: Google News Tesla 7j
+    url: "https://news.google.com/rss/search?q=Tesla+when:7d&hl=en-US&gl=US&ceid=US:en"
+
+  - id: gnews_spacex_7d
+    company: spacex
+    name: Google News SpaceX 7j
+    url: "https://news.google.com/rss/search?q=SpaceX+when:7d&hl=en-US&gl=US&ceid=US:en"
+
+x:
+  enabled: true
+  # Requête récente (7 jours max sans Academic). Complétée par les from: de la watchlist.
+  extra_query: "(Tesla OR TSLA OR SpaceX OR Starship OR Starlink OR Cybercab OR Optimus OR Roadster)"
+  max_results: 50

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>SpaceX news</title>
+    <item>
+      <title>SpaceX outlines plans for Starship test site at Kennedy Space Center</title>
+      <link>https://example.com/ksc</link>
+      <pubDate>Fri, 14 Aug 2026 15:08:00 GMT</pubDate>
+      <source>Florida Today</source>
+      <description>SpaceX plans a static test stand for Starship in Florida. Gwynne Shotwell said Florida launches could start later this year.</description>
+    </item>
+    <item>
+      <title>Elon Musk Says SpaceX Will Try to Catch a Returning Starship This Month</title>
+      <link>https://example.com/catch</link>
+      <pubDate>Fri, 14 Aug 2026 19:29:00 GMT</pubDate>
+      <source>The Motley Fool</source>
+      <description>Musk told followers a tower catch may be attempted.</description>
+    </item>
+  </channel>
+</rss>

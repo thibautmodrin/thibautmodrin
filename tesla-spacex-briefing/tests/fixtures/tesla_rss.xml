@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Tesla news</title>
+    <item>
+      <title>Tesla to unveil redesigned Roadster as early as August - Reuters</title>
+      <link>https://example.com/roadster</link>
+      <pubDate>Fri, 14 Aug 2026 17:14:00 GMT</pubDate>
+      <source>Reuters</source>
+      <description>Tesla is planning to unveil its redesigned Roadster. Elon Musk said the demonstration will be difficult to execute and could go wrong.</description>
+    </item>
+    <item>
+      <title>Tesla ‘flying’ Roadster demo could come this month - Electrek</title>
+      <link>https://example.com/roadster-electrek</link>
+      <pubDate>Fri, 14 Aug 2026 15:43:00 GMT</pubDate>
+      <source>Electrek</source>
+      <description>The demonstration is planned for SpaceX’s rocket test site in McGregor, Texas.</description>
+    </item>
+    <item>
+      <title>The Museum of Discovery demonstrates their bipolar Tesla coil - KATV</title>
+      <link>https://example.com/coil</link>
+      <pubDate>Fri, 14 Aug 2026 17:15:00 GMT</pubDate>
+      <source>KATV</source>
+      <description>A science museum shows a Tesla coil.</description>
+    </item>
+    <item>
+      <title>Cathie Wood said Tesla robotaxis remain the core of ARK’s thesis - Example</title>
+      <link>https://example.com/ark</link>
+      <pubDate>Thu, 13 Aug 2026 12:00:00 GMT</pubDate>
+      <source>Example</source>
+      <description>ARK Invest reaffirmed its Tesla position.</description>
+    </item>
+  </channel>
+</rss>
