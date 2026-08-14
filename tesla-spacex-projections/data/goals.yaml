@@ -1,0 +1,117 @@
+# Objectifs officiels vs commentaires de direction.
+# Un objectif Musk n'est pas un fait comptable : il sert de jalon à suivre.
+
+tesla_ceo_award_2025:
+  horizon_years: 10
+  source: tesla_ceo_award_2025
+  product:
+    - id: vehicles_cumulative
+      label: Véhicules Tesla livrés (cumul)
+      target: 20000000
+      unit: units
+      current_as_of: "2026-06-30"
+      current: 9700000
+      current_source: tesla_q2_2026
+      definition: >
+        Livraisons de véhicules neufs + robotaxis non supervisés mis
+        en opération commerciale (proxy award 2025).
+    - id: fsd_active
+      label: Abonnements FSD actifs
+      target: 10000000
+      unit: subs
+      current_as_of: "2026-06-30"
+      current: 1480000
+      current_source: tesla_q2_2026
+      definition: >
+        Moyenne sur 3 mois. Paiement up-front ou mensuel, hors essais gratuits.
+    - id: bots_delivered
+      label: Robots (Optimus) livrés
+      target: 1000000
+      unit: units
+      current_as_of: "2026-06-30"
+      current: 0
+      current_source: tesla_q2_2026
+      definition: >
+        Produit mobile à IA, hors véhicules. Production Fremont / Texas
+        en construction ; SOP 2026 pour usage interne (Academy).
+    - id: robotaxis_commercial
+      label: Robotaxis en opération commerciale
+      target: 1000000
+      unit: units
+      current_as_of: "2026-06-30"
+      current: 400
+      current_confidence: low
+      current_source: tesla_q2_2026
+      definition: >
+        Moyenne quotidienne ≥ 1 M de robotaxis opérés par ou pour Tesla
+        sur 3 mois consécutifs, sans chauffeur humain. Inclut Cybercab
+        et Model Y/3 convertis.
+  ebitda:
+    - {id: ebitda_50, label: "Adjusted EBITDA 50 Md$", target_b: 50}
+    - {id: ebitda_80, label: "Adjusted EBITDA 80 Md$", target_b: 80}
+    - {id: ebitda_130, label: "Adjusted EBITDA 130 Md$", target_b: 130}
+    - {id: ebitda_210, label: "Adjusted EBITDA 210 Md$", target_b: 210}
+    - {id: ebitda_300, label: "Adjusted EBITDA 300 Md$", target_b: 300}
+    - {id: ebitda_400, label: "Adjusted EBITDA 400 Md$ (3 périodes distinctes de 4 trimestres)", target_b: 400}
+  market_cap_t:
+    - 2.0
+    - 2.5
+    - 3.0
+    - 3.5
+    - 4.0
+    - 4.5
+    - 5.0
+    - 5.5
+    - 6.0
+    - 6.5
+    - 7.5
+    - 8.5
+
+tesla_operating_targets:
+  - id: cybercab_cost_per_mile
+    label: Coût d'exploitation Cybercab à l'échelle
+    target: 0.20
+    unit: usd_per_mile
+    source: tesla_opex_0_20
+    current: null
+    note: Non observé. Le service 2026 a encore des opérateurs de sécurité sur une partie des trajets.
+  - id: cybercab_unit_cost
+    label: Coût / prix Cybercab
+    target: 25000
+    unit: usd
+    source: tesla_earnings_call_cybercab_2024
+  - id: cybercab_annual_production
+    label: Cadence Cybercab annuelle
+    target: 2000000
+    unit: units_per_year
+    stretch: 4000000
+    source: tesla_earnings_call_cybercab_2024
+  - id: cybercab_giga_texas_capacity
+    label: Capacité installée Giga Texas (Cybercab)
+    target: 125000
+    unit: units_per_year
+    current: 125000
+    note: Capacité ≠ rythme de production. Rampe initiale « très lente » (Musk, Q2 2026).
+    source: tesla_q2_2026
+
+spacex_targets:
+  - id: starlink_subs_near
+    label: Abonnés Starlink (cible direction, 2026)
+    target: 25000000
+    unit: subs
+    current: 12000000
+    current_as_of: "2026-06-30"
+    source: spacex_s1_2026
+    note: Cible souvent citée ~25 M ; pas un guidage audité unique.
+  - id: arr_100b_2026
+    label: ARR 100 Md$ (décembre 2026)
+    target_b: 100
+    source: spacex_musk_arr
+    nature: musk_commentary
+  - id: revenue_1t_2030
+    label: CA annuel 1 000 Md$ en 2030
+    target_b: 1000
+    year: 2030
+    source: spacex_musk_arr
+    nature: musk_commentary
+    note: Avancé de 2031 à 2030 lors de l'earnings août 2026. Implique surtout l'IA / compute orbital.

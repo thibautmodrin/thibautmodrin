@@ -14,6 +14,7 @@ Python · Machine learning · Data engineering · APIs · Docker · SQL · GenAI
 2. **[CathQ](https://github.com/thibautmodrin/CathQ)** — Qualité prédictive en extrusion. Prédiction du risque de rebut sur cathéters cardiovasculaires (MLOps : monitoring, réentraînement, CI).
 3. **[ERP-Stock-Prediction](https://github.com/thibautmodrin/ERP-Stock-Prediction)** — Anticipation des ruptures de stock. Module prédictif FastAPI branché sur un ERP pour inventaire et ventes.
 4. **[Vitizen-RAG](https://github.com/thibautmodrin/Vitizen-RAG)** — Assistant phytosanitaire viticole. Réponses sourcées (Chroma + Mistral + FastAPI) à partir d’une documentation technique.
+5. **[Tesla × SpaceX — projections](./tesla-spacex-projections)** — CA, marges et jalons 2026-2035. Modèle bottom-up (Streamlit) : Cybercab / robotaxi, Starlink, suivi du plan CEO Tesla.
 
 ## Contact
 

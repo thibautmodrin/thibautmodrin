@@ -1,0 +1,96 @@
+# Registre des sources. Chaque chiffre du modèle doit pouvoir être relié ici.
+# Types: fact (dépôt SEC / earnings Tesla ou SpaceX), estimate (S-1 / analystes),
+# assumption (hypothèse de scénario, pas un fait).
+
+as_of: "2026-08-14"
+
+tesla:
+  - id: tesla_q2_2026
+    type: fact
+    title: Tesla Q2 2026 Update
+    url: https://assets-ir.tesla.com/tesla-contents/IR/TSLA-Q2-2026-Update.pdf
+    used_for:
+      - CA et marges TTM / trimestriels
+      - livraisons, FSD, stockage, robotaxi villes
+      - capacité Cybercab Giga Texas (>125k)
+      - production Cybercab démarrée, pas encore en flotte commerciale
+  - id: tesla_q4_2025
+    type: fact
+    title: Tesla Q4 and FY 2025 Update
+    url: https://assets-ir.tesla.com/tesla-contents/IR/TSLA-Q4-2025-Update.pdf
+    used_for:
+      - historique annuel 2021-2025 CA, marges, EBITDA
+      - livraisons 2021-2025
+      - stockage 2021-2025 GWh
+      - FSD abonnés fin 2025
+  - id: tesla_10q_q2_2026
+    type: fact
+    title: Tesla Form 10-Q Q2 FY2026
+    url: https://www.sec.gov/Archives/edgar/data/1318605/000162828026049270/
+    used_for:
+      - CA H1 2026 par segment
+      - ASP véhicule Q2
+  - id: tesla_ceo_award_2025
+    type: fact
+    title: Tesla 2025 CEO Performance Award (DEF 14A / Exhibit 4.4)
+    url: https://www.sec.gov/Archives/edgar/data/1318605/000110465925108602/tm2530188d1_ex4-4.htm
+    used_for:
+      - 20 M véhicules cumulés
+      - 10 M abonnements FSD
+      - 1 M robots
+      - 1 M robotaxis en opération commerciale
+      - jalons Adjusted EBITDA 50 → 400 Md$
+      - définitions juridiques Robotaxi / Bot / FSD
+  - id: tesla_earnings_call_cybercab_2024
+    type: fact
+    title: Tesla earnings call (objectifs Cybercab Musk)
+    note: "Coût ~25 k$, cadence cible ≥2 M/an (éventuellement 4 M). Ce n'est pas un guidage audité."
+    used_for:
+      - coût unitaire Cybercab
+      - capacité de production cible
+  - id: tesla_opex_0_20
+    type: estimate
+    title: Coût d'exploitation cible 0,20 $/mile (Musk, We Robot / earnings)
+    note: Inclut énergie, maintenance, nettoyage, dépréciation, assurance — à l'échelle. Pas observé en 2026.
+    used_for:
+      - borne basse du coût/mile scénario objectifs
+  - id: tesla_robotaxi_price_austin
+    type: estimate
+    title: Prix robotaxi Austin ~1,40 $/mile (2026, presse spécialisée)
+    used_for:
+      - ancrage prix/mile 2026
+  - id: street_robotaxi_2026_2030
+    type: estimate
+    title: Consensus Street CA robotaxi (Motley Fool / FactSet, mai 2026)
+    note: "2026 0,18 Md$ ; 2027 1,8 ; 2028 7,0 ; 2029 22,3 ; 2030 42,4. Large dispersion."
+    used_for:
+      - calage du scénario de base (ordre de grandeur, pas copie)
+
+spacex:
+  - id: spacex_s1_2026
+    type: fact
+    title: SpaceX Form S-1 (mai 2026) repris dans les analyses post-IPO
+    note: Chiffres 2025 Connectivity 11,387 Md$, total ~18,7 Md$, perte GAAP ~4,9 Md$.
+    used_for:
+      - CA 2025 Starlink / groupe
+      - abonnés Starlink 2022-2025
+      - ARPU 2023-2025
+  - id: spacex_q2_2026
+    type: fact
+    title: SpaceX Q2 2026 earnings (premier trimestre public post-IPO)
+    note: "Connectivity 4,29 Md$ / EBIT 1,66 Md$ ; Space 0,96 Md$ / perte 0,54 Md$ ; AI 2,56 Md$. Starlink 12 M abonnés."
+    used_for:
+      - run-rate 2026
+      - mix segment
+  - id: spacex_musk_arr
+    type: assumption
+    title: Objectifs Musk (earnings août 2026)
+    note: "ARR 100 Md$ d'ici décembre 2026 ; 1 000 Md$ de CA en 2030. Traités comme scénario objectifs, pas comme base."
+    used_for:
+      - jalons SpaceX « Objectifs »
+  - id: spacex_sacra
+    type: estimate
+    title: Sacra — SpaceX revenue 2024-2025
+    url: https://sacra.com/c/spacex/
+    used_for:
+      - 2024 13,1 Md$ ; 2025 18,7 Md$ ; Space 4,1 Md$ en 2025
