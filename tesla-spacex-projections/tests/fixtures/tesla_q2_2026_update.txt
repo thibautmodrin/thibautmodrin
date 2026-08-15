@@ -1,0 +1,50 @@
+===== PAGE 1 =====
+Q2 2026 Update
+1
+===== PAGE 4 =====
+F I N A N C I A L   S U M M A R Y
+(Unaudited)
+($ in millions, except percentages and per share data) Q2-2025 Q3-2025 Q4-2025 Q1-2026 Q2-2026 YoY
+Total automotive revenues 16,661 21,205 17,693 16,234 20,516 23%
+Energy generation and storage revenue 2,789 3,415 3,837 2,408 3,139 13%
+Services and other revenue 3,046 3,475 3,371 3,745 4,581 50%
+Total revenues 22,496 28,095 24,901 22,387 28,236 26%
+Total gross profit 3,878 5,054 5,009 4,720 4,751 23%
+Total GAAP gross margin 17.2% 18.0% 20.1% 21.1% 16.8% -41 bp
+Operating expenses 2,955 3,430 3,600 3,779 4,353 47%
+Income from operations 923 1,624 1,409 941 398 -57%
+Operating margin 4.1% 5.8% 5.7% 4.2% 1.4% -269 bp
+Adjusted EBITDA 3,401 4,227 4,154 3,668 3,273 -4%
+Adjusted EBITDA margin 15.1% 15.0% 16.7% 16.4% 11.6% -353 bp
+Net income attributable to common stockholders (GAAP) 1,172 1,373 840 477 1,114 -5%
+Net income attributable to common stockholders (non-GAAP) 1,393 1,770 1,761 1,453 1,153 -17%
+EPS attributable to common stockholders, diluted (GAAP) 0.33 0.39 0.24 0.13 0.32 -3%
+EPS attributable to common stockholders, diluted (non-GAAP) 0.40 0.50 0.50 0.41 0.33 -18%
+Net cash provided by operating activities 2,540 6,238 3,813 3,937 4,697 85%
+Capital expenditures (2,394) (2,248) (2,393) (2,493) (5,789) 142%
+Free cash flow 146 3,990 1,420 1,444 (1,092) -848%
+Cash, cash equivalents and short-term investments 36,782 41,647 44,059 44,743 43,524 18%
+4
+===== PAGE 5 =====
+Q2-2025 Q3-2025 Q4-2025 Q1-2026 Q2-2026 YoY
+Model 3/Y production 396,835 435,826 422,652 394,611 442,936 12%
+Other models production 13,409 11,624 11,706 13,775 8,822 -34%
+Total production 410,244 447,450 434,358 408,386 451,758 10%
+Model 3/Y deliveries 373,728 481,166 406,585 341,893 467,762 25%
+Other models deliveries 10,394 15,933 11,642 16,130 12,364 19%
+Total deliveries 384,122 497,099 418,227 358,023 480,126 25%
+ of which subject to operating lease accounting 6,670 10,230 10,996 3,430 7,580 14%
+Cumulative deliveries(1) (all-time; mil) 8.0 8.5 8.9 9.2 9.7 21%
+Active FSD Subscriptions(2) (mil) 0.95 1.04 1.10 1.28 1.48 56%
+Total end of quarter operating lease (new vehicle) count(3) 172,882 167,163 163,075 151,991 141,876 -18%
+Global vehicle inventory (days of supply)(4) 24 10 15 27 15 -38%
+Storage deployed (GWh) 9.6 12.5 14.2 8.8 13.5 41%
+Supercharger stations 7,377 7,753 8,182 8,463 8,704 18%
+Supercharger connectors 70,228 73,817 77,682 79,918 82,357 17%
+O P E R A T I O N A L  S U M M A R Y
+(Unaudited)
+5
+(1) In accordance with our 2025 CEO Performance Award, metric includes all new Tesla vehicles delivered to customers plus any unsupervised Robotaxis placed into commercial operation. For further detail see our 2025 Proxy Statement.
+(2) In accordance with our 2025 CEO Performance Award, metric includes both upfront payment and monthly subscriptions and excludes free trials. For further detail see our 2025 Proxy Statement.
+(3) Beginning in Q4’25, end of quarter operating lease count pertains only to new vehicles. Q3’25 has been adjusted to exclude used vehicles.
+(4) Days of supply is calculated by dividing new vehicle ending inventory by the relevant quarter’s deliveries and using 75 trading days (aligned with Automotive News definition).

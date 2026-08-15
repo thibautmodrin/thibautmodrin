@@ -1,0 +1,66 @@
+# Historique SpaceX — mélange S-1 (faits 2025) et earnings Q2 2026.
+# Le mix 2026 n'est pas comparable à 2025 : fusion xAI (fév. 2026) + IPO (juin 2026).
+
+as_of: "2026-08-14"
+currency: USD
+
+annual:
+  - year: 2023
+    revenue_connectivity: 4.2
+    revenue_space: 4.5
+    revenue_ai: 0.0
+    revenue_total: 8.7
+    starlink_subs_eoy_m: 2.3
+    starlink_arpu_month: 99.0
+    source: spacex_s1_2026
+    confidence: medium
+    note: "2023 reconstitué à partir du S-1 (abonnés, ARPU) et des séries Sacra."
+  - year: 2024
+    revenue_connectivity: 7.7
+    revenue_space: 5.4
+    revenue_ai: 0.0
+    revenue_total: 13.1
+    starlink_subs_eoy_m: 4.4
+    starlink_arpu_month: 91.0
+    source: spacex_sacra
+    confidence: medium
+  - year: 2025
+    revenue_connectivity: 11.387
+    revenue_space: 4.1
+    revenue_ai: 3.2
+    revenue_total: 18.7
+    connectivity_operating_income: 4.423
+    connectivity_operating_margin: 0.388
+    adj_ebitda: 6.6
+    gaap_net_income: -4.9
+    starlink_subs_eoy_m: 8.9
+    starlink_arpu_month: 81.0
+    falcon_launches: 165
+    falcon_external_launches: 43
+    source: spacex_s1_2026
+    confidence: high
+    note: "AI 2025 = résiduel (hors Connectivity/Space) ; xAI n'est consolidé qu'en 2026."
+
+snapshot_latest:
+  date: "2026-06-30"
+  label: "Q2 2026 (premier trimestre public post-IPO)"
+  q2_connectivity: 4.29
+  q2_connectivity_oi: 1.66
+  q2_space: 0.962
+  q2_space_oi: -0.542
+  q2_ai: 2.56
+  starlink_subs_m: 12.0
+  starlink_arpu_month_blended: 66.0
+  source: spacex_q2_2026
+  note: >
+    L'ARPU 66 $/mois (Q1) est un blended qui inclut vraisemblablement
+    le direct-to-cell bas de gamme. L'ARPU résidentiel reste plus élevé.
+    On utilise un ARPU blended scénarisé, pas 66 $ comme destin.
+
+starlink_subs_history_m:
+  2022: 1.0
+  2023: 2.3
+  2024: 4.4
+  2025: 8.9
+  "2026-03": 10.3
+  "2026-06": 12.0

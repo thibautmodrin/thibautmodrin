@@ -1,0 +1,156 @@
+# Historique Tesla — faits issu des Update decks / 10-K / 10-Q.
+# Unités: revenue_* en milliards USD, deliveries en unités, storage en GWh.
+
+as_of: "2026-08-14"
+currency: USD
+notes:
+  - "2026 n'est pas une année close. H1 est réel ; le modèle projette le FY."
+  - "Le CA FSD n'est pas isolé dans les comptes (Automotive / Services). On le suit en KPI, sans le rajouter au CA."
+
+annual:
+  - year: 2021
+    revenue_auto: 47.232
+    revenue_energy: 2.789
+    revenue_services: 3.802
+    revenue_total: 53.823
+    gross_profit: 13.606
+    gross_margin: 0.253
+    operating_income: 6.523
+    operating_margin: 0.121
+    adj_ebitda: 11.722
+    ocf: 11.497
+    capex: 6.514
+    fcf: 4.983
+    deliveries: 936222
+    storage_gwh: 4.0
+    fsd_subs_eoy_m: 0.4
+    cumulative_deliveries_m: 2.3
+    source: tesla_q4_2025
+  - year: 2022
+    revenue_auto: 71.462
+    revenue_energy: 3.909
+    revenue_services: 6.091
+    revenue_total: 81.462
+    gross_profit: 20.853
+    gross_margin: 0.256
+    operating_income: 13.656
+    operating_margin: 0.168
+    adj_ebitda: 19.390
+    ocf: 14.724
+    capex: 7.163
+    fcf: 7.561
+    deliveries: 1313851
+    storage_gwh: 6.5
+    fsd_subs_eoy_m: 0.5
+    cumulative_deliveries_m: 3.7
+    source: tesla_q4_2025
+  - year: 2023
+    revenue_auto: 82.419
+    revenue_energy: 6.035
+    revenue_services: 8.319
+    revenue_total: 96.773
+    gross_profit: 17.660
+    gross_margin: 0.182
+    operating_income: 8.891
+    operating_margin: 0.092
+    adj_ebitda: 16.631
+    ocf: 13.256
+    capex: 8.899
+    fcf: 4.357
+    deliveries: 1808581
+    storage_gwh: 14.7
+    fsd_subs_eoy_m: 0.6
+    cumulative_deliveries_m: 5.5
+    source: tesla_q4_2025
+  - year: 2024
+    revenue_auto: 77.070
+    revenue_energy: 10.086
+    revenue_services: 10.534
+    revenue_total: 97.690
+    gross_profit: 17.450
+    gross_margin: 0.179
+    operating_income: 7.076
+    operating_margin: 0.072
+    adj_ebitda: 16.056
+    ocf: 14.923
+    capex: 11.342
+    fcf: 3.581
+    deliveries: 1789226
+    storage_gwh: 31.4
+    fsd_subs_eoy_m: 0.8
+    cumulative_deliveries_m: 7.3
+    source: tesla_q4_2025
+  - year: 2025
+    revenue_auto: 69.526
+    revenue_energy: 12.771
+    revenue_services: 12.530
+    revenue_total: 94.827
+    gross_profit: 17.094
+    gross_margin: 0.180
+    operating_income: 4.355
+    operating_margin: 0.046
+    adj_ebitda: 14.596
+    ocf: 14.747
+    capex: 8.527
+    fcf: 6.220
+    deliveries: 1636129
+    storage_gwh: 46.7
+    fsd_subs_eoy_m: 1.1
+    cumulative_deliveries_m: 8.9
+    auto_gm_gaap: 0.178
+    auto_gm_ex_credits: 0.154
+    energy_gross_profit: 3.802
+    services_gross_profit: 0.943
+    source: tesla_q4_2025
+
+snapshot_latest:
+  date: "2026-06-30"
+  label: "Q2 2026 (dernier trimestre publié)"
+  quarter_revenue: 28.236
+  ttm_revenue: 103.6
+  quarter_gross_margin: 0.168
+  quarter_operating_margin: 0.014
+  quarter_operating_income: 0.398
+  h1_revenue: 50.623
+  h1_auto: 36.750
+  h1_energy: 5.547
+  h1_services: 8.326
+  h1_deliveries: 838149
+  h1_storage_gwh: 22.3
+  q2_deliveries: 480126
+  q2_asp_auto: 42730
+  q2_auto_gm_gaap: 0.169
+  q2_auto_gm_ex_credits: 0.163
+  q2_services_gm: 0.14
+  fsd_subs_m: 1.48
+  cumulative_deliveries_m: 9.7
+  storage_q2_gwh: 13.5
+  robotaxi_metros_unsupervised:
+    - Austin
+    - Dallas
+    - Houston
+    - Miami
+    - Orlando
+    - Tampa
+  robotaxi_metros_supervised:
+    - "SF Bay Area"
+  robotaxi_metros_prep:
+    - Phoenix
+    - "Las Vegas"
+  cybercab_production_started: true
+  cybercab_in_commercial_fleet: false
+  cybercab_capacity_giga_texas: 125000
+  cumulative_paid_robotaxi_miles: 2500000
+  robotaxi_fleet_estimate: 400
+  robotaxi_fleet_confidence: low
+  robotaxi_fleet_note: >
+    Tesla ne publie pas la taille de flotte. La presse locale décrit
+    quelques dizaines de véhicules à Austin ; 7 métropoles en rampe.
+    2,5 M de miles payants cumulés impliquent une flotte encore négligeable.
+    On ancre 400 unités (Model Y) à fin H1 2026, confiance faible.
+  capex_2026_guidance_b: 25.0
+  h1_ocf_b: 8.634
+  h1_capex_b: 8.282
+  h1_fcf_b: 0.352
+  cash_q2_b: 43.524
+  source: tesla_q2_2026
