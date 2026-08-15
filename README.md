@@ -6,7 +6,7 @@ Formé chez Jedha : parcours Fullstack Data Science & Engineering (RNCP niveau 6
 
 ## Stack
 
-Python · Machine learning · Data engineering · APIs · Docker · SQL · GenAI / RAG
+Python · Machine learning · Data engineering · APIs · Docker · SQL · GenAI / RAG · Cursor
 
 ## Projets phares
 
